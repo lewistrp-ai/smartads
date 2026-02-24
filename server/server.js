@@ -728,6 +728,70 @@ app.post('/api/vision/analyze-ad', upload.single('image'), async (req, res) => {
     }
 });
 
+app.post('/api/vision/analyze-metrics', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image uploaded.' });
+        }
+
+        const { clientName, timeframe, objective } = req.body;
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const imagePart = fileToGenerativePart(req.file.path, req.file.mimetype);
+
+        const prompt = `
+        Actúa como un Analista de Marketing y Trafficker Senior.
+        Analiza esta captura de pantalla de un administrador de anuncios o panel de métricas (Meta Ads, Google Ads, TikTok Ads, etc.).
+        
+        Contexto del reporte:
+        Cliente/Marca: ${clientName || 'No especificado'}
+        Periodo: ${timeframe || 'No especificado'}
+        Objetivo de la Campaña: ${objective || 'No especificado'}
+
+        Tu tarea es:
+        1. Identificar y extraer los números clave visibles en la imagen (Inversión, Resultados, CPA, CTR, CPC, ROAS, CPM, etc.). Si alguno no está claramente visible o calculable, pon "N/A" o elévalo a texto.
+        2. Redactar un reporte de desempeño analizando esos números en base al objetivo.
+        
+        Return ONLY a valid, parseable JSON object with the exact following structure, with no markdown formatting and no extra text at all:
+        {
+          "metricsExtracted": {
+            "spend": "valor extraído o N/A",
+            "results": "valor extraído o N/A",
+            "cpa": "valor extraído o N/A",
+            "roas": "valor extraído o N/A",
+            "ctr": "valor extraído o N/A",
+            "cpm": "valor extraído o N/A",
+            "cpc": "valor extraído o N/A"
+          },
+          "resumenEjecutivo": "Un párrafo empático y directo resumiendo el desempeño general hacia el objetivo.",
+          "puntosPositivos": ["Punto positivo 1 basado en la imagen", "Punto positivo 2"],
+          "oportunidadesMejora": ["Oportunidad de mejora 1", "Oportunidad de mejora 2"]
+        }
+        `;
+
+        const result = await model.generateContent([prompt, imagePart]);
+        let responseText = result.response.text();
+
+        // Clean up the temporary file
+        fs.unlinkSync(req.file.path);
+
+        // Ensure no markdown block wrapping
+        if (responseText.startsWith('\`\`\`json')) {
+            responseText = responseText.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+        } else if (responseText.startsWith('\`\`\`')) {
+            responseText = responseText.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+        }
+
+        const parsedJson = JSON.parse(responseText);
+        res.json({ success: true, data: parsedJson });
+    } catch (error) {
+        console.error('Gemini API Metrics Vision Error:', error);
+        if (req.file && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+        res.status(500).json({ error: 'Failed to analyze the metrics image.', details: error.message || error.toString() });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Smart Ads Backend running on http://localhost:${PORT}`);
 });

@@ -8,81 +8,91 @@ function ClientReport() {
     const [reportData, setReportData] = useState({
         clientName: '',
         timeframe: 'Semanal',
-        objective: 'Ventas/E-commerce',
-        spend: '',
-        results: '',
-        cpa: '',
-        roas: '',
-        ctr: '',
-        cpm: '',
-        cpc: ''
+        objective: 'Ventas/E-commerce'
     });
 
+    const [image, setImage] = useState(null);
+    const [preview, setPreview] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedReport, setGeneratedReport] = useState(null);
     const [error, setError] = useState('');
+    const fileInputRef = useRef(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setReportData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/webp') {
+                setError('Solo se aceptan imágenes JPG, PNG o WEBP.');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                setError('La imagen es muy pesada. Máximo 5MB.');
+                return;
+            }
+
+            setImage(file);
+            setPreview(URL.createObjectURL(file));
+            setError('');
+        }
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            // Re-use logic by creating a mock event
+            handleImageChange({ target: { files: [file] } });
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
     const generateReport = async (e) => {
         e.preventDefault();
+
+        if (!image) {
+            setError('Por favor, sube una captura de pantalla de las métricas primero.');
+            return;
+        }
+
         setIsGenerating(true);
         setError('');
         setGeneratedReport(null);
 
         try {
-            // Reusing the chat completion endpoint but giving it a specific system prompt context
-            const promptContext = `
-Eres un analista de marketing senior. El usuario necesita un reporte profesional para entregarle a su cliente.
-Nombre del cliente: ${reportData.clientName}
-Rango de tiempo: ${reportData.timeframe}
-Objetivo de la campaña: ${reportData.objective}
-Métricas: 
-- Inversión: $${reportData.spend}
-- Resultados (Ventas/Leads): ${reportData.results}
-- CPA (Costo por Adquisición): $${reportData.cpa}
-- ROAS: ${reportData.roas || 'N/A'}
-- CTR: ${reportData.ctr}%
-- CPM: $${reportData.cpm}
-- CPC: $${reportData.cpc}
+            const formData = new FormData();
+            formData.append('image', image);
+            formData.append('clientName', reportData.clientName);
+            formData.append('timeframe', reportData.timeframe);
+            formData.append('objective', reportData.objective);
 
-Tu tarea es devolver un reporte estructurado EXACTAMENTE en este formato JSON:
-{
-  "resumenEjecutivo": "Un párrafo empático y directo resumiendo el desempeño general hacia el objetivo.",
-  "puntosPositivos": ["Punto 1", "Punto 2", "Punto 3"],
-  "oportunidadesMejora": ["Oportunidad 1", "Oportunidad 2"]
-}
-
-No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
-`;
-
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/analyze`, {
-                message: "Genera el reporte en JSON",
-                metricsContext: { context: promptContext }, // We hack the context into the existing endpoint structure
-                history: []
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/vision/analyze-metrics`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
             });
 
             if (response.data.success) {
-                try {
-                    // Extract JSON from response (in case AI wraps it in markdown)
-                    let reply = response.data.reply;
-                    reply = reply.replace(/```json/g, '').replace(/```/g, '').trim();
-                    const parsedReport = JSON.parse(reply);
-                    setGeneratedReport({ ...parsedReport, ...reportData });
-                } catch (parseError) {
-                    // Fallback if AI didn't return perfect JSON
-                    console.error('Failed to parse AI JSON', parseError, response.data.reply);
-                    setError('La Inteligencia Artificial no devolvió el formato esperado. Intenta de nuevo.');
-                }
+                const parsedReport = response.data.data;
+                // Combine the extracted metrics, AI text, and context data
+                setGeneratedReport({
+                    ...parsedReport.metricsExtracted,
+                    ...parsedReport,
+                    ...reportData
+                });
             } else {
                 setError('Hubo un error al generar el reporte.');
             }
         } catch (err) {
-            console.error('Error generating report:', err);
-            setError('Error de conexión al generar el reporte.');
+            console.error('Error generating AI report:', err);
+            setError('Error de conexión al generar el reporte. Verifica tu backend y configuración de API.');
         } finally {
             setIsGenerating(false);
         }
@@ -92,18 +102,28 @@ No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
         window.print();
     };
 
+    const resetAnalysis = () => {
+        setImage(null);
+        setPreview(null);
+        setGeneratedReport(null);
+        setError('');
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+
     return (
-        <div className="client-report-page">
+        <div className="client-report-page animate-fade-in">
             <div className="no-print">
                 <h1>Reportes para Clientes</h1>
-                <p className="subtitle">Genera reportes de desempeño hiper-profesionales con Inteligencia Artificial.</p>
+                <p className="subtitle" style={{ maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+                    Sube una captura de tus métricas (Meta Ads, Google Ads). Nuestra IA <strong>Vision</strong> extraerá los números y redactará un análisis profesional.
+                </p>
 
-                <div className="card" style={{ maxWidth: '800px', margin: '0 0 2rem 0' }}>
+                <div className="card glass-panel" style={{ maxWidth: '800px', margin: '0 auto 2rem auto' }}>
                     <form onSubmit={generateReport}>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="form-group" style={{ marginBottom: '1rem' }}>
                                 <label>Nombre de la Marca / Cliente</label>
-                                <input type="text" className="form-control" name="clientName" value={reportData.clientName} onChange={handleInputChange} placeholder="ej. Clínica Dental Sonrisas" required />
+                                <input type="text" className="form-control" name="clientName" value={reportData.clientName} onChange={handleInputChange} placeholder="ej. Clínica Sonrisas" required />
                             </div>
                             <div className="form-group" style={{ marginBottom: '1rem' }}>
                                 <label>Periodo del Reporte</label>
@@ -126,46 +146,65 @@ No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
                             </select>
                         </div>
 
-                        <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--accent-color)' }}>Métricas del Periodo</h3>
-                        <div className="grid grid-cols-3 gap-4" style={{ marginBottom: '1rem' }}>
-                            <div className="form-group">
-                                <label>Inversión ($)</label>
-                                <input type="number" step="0.01" className="form-control" name="spend" value={reportData.spend} onChange={handleInputChange} required />
+                        <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--primary)', marginTop: '2rem' }}>Sube el Panel de Métricas</h3>
+
+                        {!preview ? (
+                            <div
+                                className="upload-dropzone"
+                                onDrop={handleDrop}
+                                onDragOver={handleDragOver}
+                                onClick={() => fileInputRef.current?.click()}
+                                style={{
+                                    border: '2px dashed var(--primary)',
+                                    borderRadius: '1rem',
+                                    padding: '3rem 2rem',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    background: 'rgba(59, 130, 246, 0.05)',
+                                    transition: 'all 0.3s ease',
+                                    marginBottom: '1.5rem'
+                                }}
+                            >
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleImageChange}
+                                    accept="image/jpeg, image/png, image/webp"
+                                    style={{ display: 'none' }}
+                                />
+                                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
+                                <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Analizador de Capturas</h3>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: 0 }}>
+                                    Haz clic o arrastra la captura de pantalla (ej. Meta Ads Manager) con las métricas visibles.
+                                </p>
                             </div>
-                            <div className="form-group">
-                                <label>Resultados (Leads/Ventas)</label>
-                                <input type="number" step="0.01" className="form-control" name="results" value={reportData.results} onChange={handleInputChange} required />
+                        ) : (
+                            <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: 'rgba(0,0,0,0.1)', padding: '1rem', borderRadius: '1rem' }}>
+                                <img src={preview} alt="Metrics Preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px', border: '1px solid var(--border-color)', objectFit: 'contain' }} />
+                                <div style={{ marginTop: '1rem' }}>
+                                    <button type="button" onClick={() => { setImage(null); setPreview(null); }} className="btn" style={{ background: 'transparent', border: '1px solid var(--border-color)' }}>
+                                        Cambiar Imagen
+                                    </button>
+                                </div>
                             </div>
-                            <div className="form-group">
-                                <label>Costo x Resultado ($ CPA)</label>
-                                <input type="number" step="0.01" className="form-control" name="cpa" value={reportData.cpa} onChange={handleInputChange} required />
+                        )}
+
+                        {error && (
+                            <div style={{ padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid var(--warning)', borderRadius: '8px', color: '#fca5a5', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+                                ⚠️ {error}
                             </div>
+                        )}
+
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                            <button type="submit" className="btn btn-glow" style={{ flex: 1, padding: '1rem', fontSize: '1.1rem' }} disabled={isGenerating || !image || generatedReport}>
+                                {isGenerating ? <span className="typing-indicator">Analizando métricas con Inteligencia Artificial...</span> : '✨ Generar Reporte desde Imagen'}
+                            </button>
+                            {generatedReport && (
+                                <button type="button" onClick={resetAnalysis} className="btn" style={{ background: 'transparent', border: '1px solid var(--border-color)', whiteSpace: 'nowrap' }}>
+                                    ↺ Hacer Otro
+                                </button>
+                            )}
                         </div>
-
-                        <div className="grid grid-cols-4 gap-4" style={{ marginBottom: '1.5rem' }}>
-                            <div className="form-group">
-                                <label>ROAS</label>
-                                <input type="number" step="0.01" className="form-control" name="roas" value={reportData.roas} onChange={handleInputChange} placeholder="Opcional" />
-                            </div>
-                            <div className="form-group">
-                                <label>CTR (%)</label>
-                                <input type="number" step="0.01" className="form-control" name="ctr" value={reportData.ctr} onChange={handleInputChange} required />
-                            </div>
-                            <div className="form-group">
-                                <label>CPM ($)</label>
-                                <input type="number" step="0.01" className="form-control" name="cpm" value={reportData.cpm} onChange={handleInputChange} required />
-                            </div>
-                            <div className="form-group">
-                                <label>CPC ($)</label>
-                                <input type="number" step="0.01" className="form-control" name="cpc" value={reportData.cpc} onChange={handleInputChange} required />
-                            </div>
-                        </div>
-
-                        {error && <p style={{ color: 'var(--danger)', marginBottom: '1rem' }}>{error}</p>}
-
-                        <button type="submit" className="btn" style={{ width: '100%' }} disabled={isGenerating}>
-                            {isGenerating ? <span className="typing-indicator">Analizando métricas y redactando...</span> : '✨ Generar Reporte con IA'}
-                        </button>
                     </form>
                 </div>
             </div>
@@ -178,6 +217,7 @@ No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
                     borderRadius: '1rem',
                     border: '1px solid var(--border-color)',
                     maxWidth: '800px',
+                    margin: '0 auto',
                     color: 'var(--text-primary)'
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', borderBottom: '2px solid var(--accent-color)', paddingBottom: '1rem' }}>
@@ -200,26 +240,26 @@ No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
                     </div>
 
                     <div style={{ marginBottom: '2.5rem' }}>
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>📊 Resumen Ejecutivo</h3>
+                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>📊 Resumen Ejecutivo (IA)</h3>
                         <p style={{ fontSize: '1.05rem', lineHeight: '1.6', color: 'var(--text-secondary)' }}>{generatedReport.resumenEjecutivo}</p>
                     </div>
 
                     <div className="grid grid-cols-4 gap-4" style={{ marginBottom: '2.5rem' }}>
                         <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Inversión</p>
-                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>${generatedReport.spend}</p>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Inversión Estimada</p>
+                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{generatedReport.spend || 'N/A'}</p>
                         </div>
                         <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Resultados</p>
-                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--success)' }}>{generatedReport.results}</p>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Resultados</p>
+                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--success)' }}>{generatedReport.results || 'N/A'}</p>
                         </div>
                         <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>CPA</p>
-                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>${generatedReport.cpa}</p>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>CPA Estimado</p>
+                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{generatedReport.cpa || 'N/A'}</p>
                         </div>
                         <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>{generatedReport.roas ? 'ROAS' : 'CTR'}</p>
-                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{generatedReport.roas ? `${generatedReport.roas}x` : `${generatedReport.ctr}%`}</p>
+                            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>ROAS / CTR</p>
+                            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>{generatedReport.roas !== 'N/A' && generatedReport.roas ? generatedReport.roas : generatedReport.ctr || 'N/A'}</p>
                         </div>
                     </div>
 
@@ -227,10 +267,10 @@ No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
                         <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.05)', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                                 <span style={{ fontSize: '1.2rem' }}>🟢</span>
-                                <h3 style={{ margin: 0, color: 'var(--success)', fontSize: '1.1rem' }}>Puntos Positivos</h3>
+                                <h3 style={{ margin: 0, color: 'var(--success)', fontSize: '1.1rem' }}>Lo que funcionó bien</h3>
                             </div>
                             <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)' }}>
-                                {generatedReport.puntosPositivos.map((punto, idx) => (
+                                {generatedReport.puntosPositivos && generatedReport.puntosPositivos.map((punto, idx) => (
                                     <li key={idx} style={{ marginBottom: '0.5rem', lineHeight: '1.4' }}>{punto}</li>
                                 ))}
                             </ul>
@@ -238,10 +278,10 @@ No agregues markdown markdown block de código, SOLO devuelve el JSON válido.
                         <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.05)', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                                 <span style={{ fontSize: '1.2rem' }}>🟡</span>
-                                <h3 style={{ margin: 0, color: 'var(--warning)', fontSize: '1.1rem' }}>Oportunidades de Mejora</h3>
+                                <h3 style={{ margin: 0, color: 'var(--warning)', fontSize: '1.1rem' }}>Áreas de Mejora</h3>
                             </div>
                             <ul style={{ margin: 0, paddingLeft: '1.2rem', color: 'var(--text-secondary)' }}>
-                                {generatedReport.oportunidadesMejora.map((punto, idx) => (
+                                {generatedReport.oportunidadesMejora && generatedReport.oportunidadesMejora.map((punto, idx) => (
                                     <li key={idx} style={{ marginBottom: '0.5rem', lineHeight: '1.4' }}>{punto}</li>
                                 ))}
                             </ul>
