@@ -347,3 +347,57 @@ p.subtitle {
     grid-template-columns: 1fr;
   }
 }
+
+/* --- Print Styles for Reports --- */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .sidebar,
+  .mobile-header,
+  .no-print,
+  .btn {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  .app-container {
+    display: block !important;
+  }
+
+  .report-print-container {
+    border: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Force background colors to print if user has the setting enabled */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Override dark mode text */
+  .report-print-container h2,
+  .report-print-container h3,
+  .report-print-container p,
+  .report-print-container li,
+  .report-print-container span,
+  .report-print-container strong {
+    color: black !important;
+  }
+
+  .report-print-container .grid {
+    display: grid !important;
+    page-break-inside: avoid;
+  }
+}

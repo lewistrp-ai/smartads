@@ -15,6 +15,7 @@ import SystemHub from './pages/SystemHub';
 import AdAnalyzer from './pages/AdAnalyzer';
 import ManyChatBuilder from './pages/ManyChatBuilder';
 import BusinessCoach from './pages/BusinessCoach';
+import ClientReport from './pages/ClientReport';
 
 // Layout Component
 const AppLayout = ({ children }) => {
@@ -93,6 +94,9 @@ const AppLayout = ({ children }) => {
                             </li>
                             <li className="nav-item">
                                 <Link to="/metrics" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>👩‍⚕️ Diagnóstico Estratégico</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/client-report" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>📊 Reportes para Clientes</Link>
                             </li>
 
                             <li className="nav-item mt-4" style={{ marginTop: '1.5rem' }}>
@@ -201,6 +205,14 @@ function App() {
                     <ProtectedRoute allowedRoles={['pro', 'admin', 'client']}>
                         <AppLayout>
                             <MetricsAnalysis />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/client-report" element={
+                    <ProtectedRoute allowedRoles={['workshop', 'pro', 'admin']}>
+                        <AppLayout>
+                            <ClientReport />
                         </AppLayout>
                     </ProtectedRoute>
                 } />
