@@ -728,51 +728,46 @@ app.post('/api/vision/analyze-ad', upload.single('image'), async (req, res) => {
     }
 });
 
-app.post('/api/vision/analyze-metrics', upload.single('image'), async (req, res) => {
+app.post('/api/chat/generate-report', async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No image uploaded.' });
+        const { clientName, timeframe, objective, metricsExtracted } = req.body;
+
+        if (!metricsExtracted) {
+            return res.status(400).json({ error: 'Faltan métricas para analizar.' });
         }
 
-        const { clientName, timeframe, objective } = req.body;
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-        const imagePart = fileToGenerativePart(req.file.path, req.file.mimetype);
 
         const prompt = `
         Actúa como un Analista de Marketing y Trafficker Senior.
-        Analiza esta captura de pantalla de un administrador de anuncios o panel de métricas (Meta Ads, Google Ads, TikTok Ads, etc.).
+        Vas a analizar los datos duros extraídos directamente desde la API de Meta Ads de la campaña de un cliente.
         
         Contexto del reporte:
         Cliente/Marca: ${clientName || 'No especificado'}
-        Periodo: ${timeframe || 'No especificado'}
+        Periodo: ${timeframe || 'Últimos 30 días'}
         Objetivo de la Campaña: ${objective || 'No especificado'}
 
+        Métricas Reales Obtenidas:
+        - Inversión Total: $${metricsExtracted.spend}
+        - Resultados Totales: ${metricsExtracted.results}
+        - Costo por Resultado (CPA): $${metricsExtracted.cpr}
+        - CTR: ${metricsExtracted.ctr}%
+        - CPC: $${metricsExtracted.cpc}
+        - CPM: $${metricsExtracted.cpm}
+
         Tu tarea es:
-        1. Identificar y extraer los números clave visibles en la imagen (Inversión, Resultados, CPA, CTR, CPC, ROAS, CPM, etc.). Si alguno no está claramente visible o calculable, pon "N/A" o elévalo a texto.
-        2. Redactar un reporte de desempeño analizando esos números en base al objetivo.
+        Redactar un reporte de desempeño analizando esos números en base al objetivo. No repitas los números de forma aburrida. Analiza si el CTR es bueno, si el CPM es caro, si el Costo por Resultado es rentable. Tienes que sonar como un profesional estratégico de Performance Marketing que le habla a su cliente dueño de negocio.
         
         Return ONLY a valid, parseable JSON object with the exact following structure, with no markdown formatting and no extra text at all:
         {
-          "metricsExtracted": {
-            "spend": "valor extraído o N/A",
-            "results": "valor extraído o N/A",
-            "cpa": "valor extraído o N/A",
-            "roas": "valor extraído o N/A",
-            "ctr": "valor extraído o N/A",
-            "cpm": "valor extraído o N/A",
-            "cpc": "valor extraído o N/A"
-          },
-          "resumenEjecutivo": "Un párrafo empático y directo resumiendo el desempeño general hacia el objetivo.",
-          "puntosPositivos": ["Punto positivo 1 basado en la imagen", "Punto positivo 2"],
-          "oportunidadesMejora": ["Oportunidad de mejora 1", "Oportunidad de mejora 2"]
+          "resumenEjecutivo": "Un párrafo empático y directo resumiendo el desempeño general hacia el objetivo (ej. 'Este mes aseguramos X resultados con una excelente tasa de conversión...').",
+          "puntosPositivos": ["Punto positivo 1 basado puramente en los datos", "Punto positivo 2"],
+          "oportunidadesMejora": ["Oportunidad de mejora estratégica 1", "Oportunidad de mejora 2"]
         }
         `;
 
-        const result = await model.generateContent([prompt, imagePart]);
+        const result = await model.generateContent(prompt);
         let responseText = result.response.text();
-
-        // Clean up the temporary file
-        fs.unlinkSync(req.file.path);
 
         // Ensure no markdown block wrapping
         if (responseText.startsWith('\`\`\`json')) {
@@ -784,11 +779,8 @@ app.post('/api/vision/analyze-metrics', upload.single('image'), async (req, res)
         const parsedJson = JSON.parse(responseText);
         res.json({ success: true, data: parsedJson });
     } catch (error) {
-        console.error('Gemini API Metrics Vision Error:', error);
-        if (req.file && fs.existsSync(req.file.path)) {
-            fs.unlinkSync(req.file.path);
-        }
-        res.status(500).json({ error: 'Failed to analyze the metrics image.', details: error.message || error.toString() });
+        console.error('Gemini API Generate Report Error:', error);
+        res.status(500).json({ error: 'Failed to generate the metrics analytical report.', details: error.message || error.toString() });
     }
 });
 
