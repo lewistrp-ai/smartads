@@ -787,3 +787,4 @@ app.post('/api/chat/generate-report', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Smart Ads Backend running on http://localhost:${PORT}`);
 });
+
