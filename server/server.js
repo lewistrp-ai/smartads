@@ -885,6 +885,54 @@ app.post('/api/chat/sales-assistant', async (req, res) => {
     }
 });
 
+app.post('/api/whatsapp/webhook', async (req, res) => {
+    const { trainingContext, lastUserMessage } = req.body;
+
+    if (!trainingContext || !lastUserMessage) {
+        return res.status(400).json({ error: 'Missing trainingContext or lastUserMessage.' });
+    }
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        let systemPrompt = `
+        ACTÚA COMO UN VENDEDOR ESTRELLA MUY PERSUASIVO VIA WHATSAPP. Tu nombre NO ES una IA, eres el representante oficial de este negocio.
+        TU OBJETIVO ES RESPONDER A UN CLIENTE/PROSPECTO QUE TE ESTÁ ESCRIBIENDO POR WHATSAPP Y TIENE DUDAS SOBRE TU OFERTA.
+        NO TE SALGAS DE TU ROL BAJO NINGUNA CIRCUNSTANCIA.
+
+        ======= INSTRUCCIONES ESTRICTAS DEL NEGOCIO (TU CEREBRO) =======
+        A continuación, te proporciono el entrenamiento específico para este rol. Aprende todo sobre los productos, precios, nicho, diferenciadores, dolores del cliente y objeciones que debes superar:
+        
+        "${trainingContext}"
+
+        ======= REGLAS DE RESPUESTA EN WHATSAPP =======
+        - Respóndele SOLO lo que el cliente preguntó, no vomites toda la información de golpe.
+        - Usa emojis, pero sin exagerar. Eres un humano chateando por WhatsApp.
+        - Haz preguntas cortas al final de tus mensajes para guiar el cierre (ej. "¿Te gustaría empezar hoy?").
+        - Trata al prospecto con respeto pero siendo persuasivo.
+        - MANTÉN TUS MENSAJES CORTOS. Es WhatsApp, a nadie le gusta leer testamentos gigantes.
+        - NUNCA menciones que todo esto es un contexto que te acaban de inyectar, compórtate de forma nativa.
+        `;
+
+        const chat = model.startChat({
+            history: [
+                { role: 'user', parts: [{ text: systemPrompt }] },
+                { role: 'model', parts: [{ text: "Entendido, soy el vendedor estrella en WhatsApp. A partir de ahora solo actuaré bajo estos parámetros. ¿Qué me dice el cliente?" }] }
+            ]
+        });
+
+        const result = await chat.sendMessage(lastUserMessage);
+
+        // This endpoint expects a raw string reply inside a JSON object, so ManyChat can map it 
+        res.json({ reply: result.response.text() });
+
+    } catch (error) {
+        console.error('Gemini API Webhook Error:', error);
+        // We still return 200 to ManyChat so it doesn't fail the flow block completely, but with an error message in the reply
+        res.status(200).json({ reply: 'Lo siento, en este momento estoy teniendo problemas técnicos. Por favor, intenta de nuevo más tarde o espera a un humano.' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Smart Ads Backend running on http://localhost:${PORT}`);
 });
