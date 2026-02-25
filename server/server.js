@@ -364,7 +364,10 @@ app.post('/api/chat/generate-copy', async (req, res) => {
     const { niche, product, ticket, audience, painPoint, objective, demographics, benefits, differentiation, objections, guarantee } = req.body;
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
 
         const prompt = `
         Act as a world-class Direct Response Copywriter for Meta Ads.
@@ -438,7 +441,10 @@ app.post('/api/chat/generate-manychat-flow', async (req, res) => {
     const { objective, niche, product, tone } = req.body;
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
 
         const prompt = `
         Actúa como un Experto en Chat Marketing y Arquitecto de embudos de ManyChat para Instagram/Facebook.
@@ -593,7 +599,10 @@ app.post('/api/chat/generate-organic', async (req, res) => {
     const { niche, audience, profile, pillars, objective } = req.body;
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
 
         const prompt = `
         Actúa como un estratega experto en Marca Personal y Creación de Contenido Viral (TikTok, Instagram Reels, LinkedIn).
@@ -675,7 +684,10 @@ app.post('/api/vision/analyze-ad', upload.single('image'), async (req, res) => {
         const { productContext } = req.body;
 
         // Use the gemini-1.5-pro model since vision in 2.5-flash might not be completely stable for all formats yet, but 1.5-pro is excellent for analysis.
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
 
         const imagePart = fileToGenerativePart(req.file.path, req.file.mimetype);
 
@@ -729,14 +741,21 @@ app.post('/api/vision/analyze-ad', upload.single('image'), async (req, res) => {
 });
 
 app.post('/api/chat/generate-report', async (req, res) => {
+    console.log("--> [DEBUG] /api/chat/generate-report HIT");
     try {
         const { clientName, timeframe, objective, metricsExtracted } = req.body;
 
+        console.log("--> [DEBUG] Body parsed:", { clientName, timeframe, objective, metricsExtracted });
+
         if (!metricsExtracted) {
+            console.log("--> [DEBUG] Missing metrics");
             return res.status(400).json({ error: 'Faltan métricas para analizar.' });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
 
         const prompt = `
         Actúa como un Analista de Marketing y Trafficker Senior.
