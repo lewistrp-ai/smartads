@@ -6,20 +6,7 @@ function AISalesAssistant() {
     const { user } = useAuth();
 
     // Form State (Context)
-    const [trainingContext, setTrainingContext] = useState({
-        niche: '',
-        product: '',
-        price: '',
-        differentiation: '',
-        painPoint: '',
-        benefits: '',
-        guarantee: '',
-        audienceDesc: '',
-        demographics: '',
-        objections: '',
-        salesRole: 'Consultivo/Educativo',
-        tone: 'Profesional y Empático'
-    });
+    const [trainingContext, setTrainingContext] = useState('');
 
     const [isTrained, setIsTrained] = useState(false);
 
@@ -39,18 +26,18 @@ function AISalesAssistant() {
     }, [messages]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setTrainingContext(prev => ({ ...prev, [name]: value }));
+        setTrainingContext(e.target.value);
     };
 
     const handleTrainAssistant = (e) => {
         e.preventDefault();
+        if (!trainingContext.trim()) return;
         setIsTrained(true);
         // Start conversation
         setMessages([
             {
                 role: 'model',
-                text: `¡Listo! He memorizado todo el contexto sobre tu catálogo de productos (${trainingContext.product}) y sus precios. Soy tu nuevo Vendedor IA con un tono ${trainingContext.tone}. ¿Cómo te puedo ayudar hoy o qué objeción quieres que practiquemos?`
+                text: '¡Listo! He procesado todo tu entrenamiento y me he puesto en personaje. ¿Hola, en qué te puedo ayudar hoy?'
             }
         ]);
     };
@@ -58,6 +45,7 @@ function AISalesAssistant() {
     const resetTraining = () => {
         setIsTrained(false);
         setMessages([]);
+        setTrainingContext('');
     };
 
     const sendMessage = async (e) => {
@@ -95,7 +83,7 @@ function AISalesAssistant() {
             <div style={{ padding: '0 2rem 1rem' }}>
                 <h1 style={{ marginBottom: '0.5rem' }}>🗣️ Entrenador de Ventas IA</h1>
                 <p className="subtitle" style={{ margin: 0, maxWidth: '800px' }}>
-                    Entrena a tu propio vendedor virtual con los datos exactos de tu negocio y ponlo a prueba respondiendo dudas u objeciones de clientes.
+                    Entrena a tu propio vendedor virtual con un prompt directo y ponlo a prueba respondiendo dudas u objeciones simuladas.
                 </p>
             </div>
 
@@ -115,65 +103,21 @@ function AISalesAssistant() {
                         )}
                     </div>
 
-                    <form onSubmit={handleTrainAssistant} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', opacity: isTrained ? 0.6 : 1, pointerEvents: isTrained ? 'none' : 'auto' }}>
+                    <form onSubmit={handleTrainAssistant} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1, opacity: isTrained ? 0.6 : 1, pointerEvents: isTrained ? 'none' : 'auto' }}>
 
-                        <div className="form-group">
-                            <label>Producto o Servicio</label>
-                            <input type="text" className="form-control" name="product" value={trainingContext.product} onChange={handleInputChange} placeholder="Ej. Curso de Marketing, Zapatos de Cuero..." required />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Nicho de Mercado</label>
-                            <input type="text" className="form-control" name="niche" value={trainingContext.niche} onChange={handleInputChange} placeholder="Ej. Salud y Fitness, Real Estate..." required />
-                        </div>
-
-                        <div className="form-group">
-                            <label>¿Por qué elegirte a ti? (Diferenciación)</label>
-                            <textarea className="form-control" name="differentiation" value={trainingContext.differentiation} onChange={handleInputChange} placeholder="Ej. Único con metodología comprobada de 3 pasos..." rows="2" required></textarea>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Problema o Dolor Principal del Cliente</label>
-                            <textarea className="form-control" name="painPoint" value={trainingContext.painPoint} onChange={handleInputChange} placeholder="Ej. Gastan mucho en anuncios sin ver retorno..." rows="2" required></textarea>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Soluciones y Beneficios Exactos</label>
-                            <textarea className="form-control" name="benefits" value={trainingContext.benefits} onChange={handleInputChange} placeholder="Ej. Recuperación de inversión en 30 días, ahorro de tiempo..." rows="2" required></textarea>
-                        </div>
-
-                        <div className="form-group">
-                            <label>Garantía de tu Producto</label>
-                            <input type="text" className="form-control" name="guarantee" value={trainingContext.guarantee} onChange={handleInputChange} placeholder="Ej. Garantía incondicional de 14 días" required />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Audiencia y Demografía</label>
-                            <input type="text" className="form-control" name="demographics" value={trainingContext.demographics} onChange={handleInputChange} placeholder="Ej. Dueños de agencias, 25-45 años, América Latina" required />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Objeciones Frecuentes a Vencer</label>
-                            <textarea className="form-control" name="objections" value={trainingContext.objections} onChange={handleInputChange} placeholder="Ej. Es muy caro, no tengo tiempo, ya probé algo igual..." rows="2" required></textarea>
-                        </div>
-
-                        <div style={{ borderTop: '1px solid var(--border-color)', margin: '1rem 0', paddingTop: '1rem' }}>
-                            <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Personalidad del Vendedor</h4>
-
-                            <div className="form-group">
-                                <label>Rol / Tipo de Vendedor</label>
-                                <select className="form-control" name="salesRole" value={trainingContext.salesRole} onChange={handleInputChange}>
-                                    <option value="Consultivo/Educativo">Consultivo y Educativo (Guía paso a paso)</option>
-                                    <option value="Cierre Agresivo (Closer)">Closer Agresivo (Enfoque en cierre rápido)</option>
-                                    <option value="Servicio al Cliente">Servicio al Cliente (Amable y paciente)</option>
-                                    <option value="Experto Técnico">Experto Técnico (Basado en datos técnicos)</option>
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Tono y Contexto Cultural</label>
-                                <input type="text" className="form-control" name="tone" value={trainingContext.tone} onChange={handleInputChange} placeholder="Ej. Profesional, Casual, Jerga y amigable, Español neutro..." required />
-                            </div>
+                        <div className="form-group" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                            <label>Prompt de Entrenamiento del Vendedor</label>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                                Describe aquí el nicho, producto, dolor principal del cliente, los precios y cómo quieres que responda el vendedor (si es formal, amigable o agresivo).
+                            </p>
+                            <textarea
+                                className="form-control"
+                                value={trainingContext}
+                                onChange={handleInputChange}
+                                placeholder="Ej: Eres un vendedor de Zapatos de Cuero en Colombia. El precio es de $800.000 COP. Tus clientes son ejecutivos y se quejan de que los zapatos se dañan rápido. Tu objetivo es recordarles nuestra garantía de 10 años y sonar muy amable e insistente..."
+                                style={{ flex: 1, minHeight: '300px', resize: 'none' }}
+                                required
+                            />
                         </div>
 
                         {!isTrained && (
