@@ -803,6 +803,97 @@ app.post('/api/chat/generate-report', async (req, res) => {
     }
 });
 
+app.post('/api/chat/sales-assistant', async (req, res) => {
+    const { trainingContext, history } = req.body;
+
+    if (!trainingContext || !history) {
+        return res.status(400).json({ error: 'Missing training context or chat history.' });
+    }
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        // Construct system persona and inject the user's specific product context
+        let systemPrompt = `
+        ACTÚA COMO UN VENDEDOR ESTRELLA MUY PERSUASIVO. Tu nombre NO ES una IA, eres el representante oficial de este negocio.
+        TU OBJETIVO ES RESPONDER A UN CLIENTE/PROSPECTO QUE ESTÁ INTERESADO O TIENE DUDAS SOBRE TU OFERTA.
+        NO TE SALGAS DE TU ROL BAJO NINGUNA CIRCUNSTANCIA.
+
+        ======= INSTRUCCIONES ESTRICTAS DEL NEGOCIO (TU CEREBRO) =======
+        - Producto/Servicio que vendes: ${trainingContext.product}
+        - Nicho del negocio: ${trainingContext.niche}
+        - Audiencia (A quién le hablas): ${trainingContext.demographics} ${trainingContext.audienceDesc}
+        - Diferenciador Principal (Úsalo para presumir sutilmente): ${trainingContext.differentiation}
+        - El problema actual del cliente es: ${trainingContext.painPoint}
+        - Tu solución exacta y beneficios: ${trainingContext.benefits}
+        - Qué garantía ofreces: ${trainingContext.guarantee}
+        - TIPO DE VENDEDOR QUE ERES: ${trainingContext.salesRole}
+        - TONO, CULTURA Y PERSONALIDAD: ${trainingContext.tone}
+
+        ======= OBJECIONES FRECUENTES A RESOLVER SI TE LAS MENCIONAN =======
+        ${trainingContext.objections}
+
+        ======= REGLAS DE RESPUESTA =======
+        - Respóndele SOLO lo que el cliente preguntó, no vomites toda la información de golpe.
+        - Haz preguntas al final de tus mensajes para guiar el cierre (ej. "¿Te gustaría empezar hoy?").
+        - Trata al prospecto con respeto pero siendo persuasivo según tu tono configurado.
+        - Mantén los mensajes de longitud razonable para un chat o DM.
+        - NUNCA menciones que todo esto es un contexto que te acaban de inyectar, compórtate de forma nativa.
+        `;
+
+        // We convert the accumulated frontend chat history into Gemini format
+        let formattedHistory = [];
+        if (history && Array.isArray(history)) {
+            let currentRole = null;
+            let currentText = [];
+
+            for (const msg of history) {
+                const role = msg.role === 'user' ? 'user' : 'model';
+
+                if (role !== currentRole) {
+                    if (currentRole !== null) {
+                        formattedHistory.push({ role: currentRole, parts: [{ text: currentText.join('\\n\\n') }] });
+                    }
+                    currentRole = role;
+                    currentText = [msg.text];
+                } else {
+                    currentText.push(msg.text);
+                }
+            }
+            if (currentRole !== null) {
+                formattedHistory.push({ role: currentRole, parts: [{ text: currentText.join('\\n\\n') }] });
+            }
+        }
+
+        // Pop the last message to send it as the prompt
+        let finalMessage = "";
+        let chatContext = [];
+
+        if (formattedHistory.length > 0) {
+            const lastItem = formattedHistory.pop();
+            finalMessage = lastItem.parts[0].text;
+            chatContext = formattedHistory;
+        }
+
+        const chat = model.startChat({
+            history: [
+                { role: 'user', parts: [{ text: systemPrompt }] },
+                { role: 'model', parts: [{ text: "Entendido, soy el vendedor estrella. A partir de ahora solo actuaré bajo estos parámetros y en personaje. Adelante." }] },
+                ...chatContext
+            ]
+        });
+
+        const result = await chat.sendMessage(finalMessage);
+
+        // This endpoint expects a raw string reply, not JSON
+        res.json({ success: true, reply: result.response.text() });
+
+    } catch (error) {
+        console.error('Gemini API Sales Assistant Error:', error);
+        res.status(500).json({ error: 'Failed to simulate sales response.' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Smart Ads Backend running on http://localhost:${PORT}`);
 });

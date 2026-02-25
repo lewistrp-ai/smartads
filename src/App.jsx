@@ -16,6 +16,7 @@ import AdAnalyzer from './pages/AdAnalyzer';
 import ManyChatBuilder from './pages/ManyChatBuilder';
 import BusinessCoach from './pages/BusinessCoach';
 import ClientReport from './pages/ClientReport';
+import AISalesAssistant from './pages/AISalesAssistant';
 
 // Layout Component
 const AppLayout = ({ children }) => {
@@ -76,6 +77,9 @@ const AppLayout = ({ children }) => {
                             </li>
                             <li className="nav-item">
                                 <Link to="/coach" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block', fontWeight: 'bold' }}>🧠 Smart Business Coach</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/sales-assistant" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block', fontWeight: 'bold' }}>🗣️ Vendedor IA</Link>
                             </li>
                             <li className="nav-item">
                                 <Link to="/copy-builder" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>✍️ Generador de Activos</Link>
@@ -149,6 +153,14 @@ function App() {
                     <ProtectedRoute allowedRoles={['workshop', 'pro', 'admin']}>
                         <AppLayout>
                             <BusinessCoach />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/sales-assistant" element={
+                    <ProtectedRoute allowedRoles={['workshop', 'pro', 'admin']}>
+                        <AppLayout>
+                            <AISalesAssistant />
                         </AppLayout>
                     </ProtectedRoute>
                 } />
