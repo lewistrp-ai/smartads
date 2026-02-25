@@ -9,6 +9,7 @@ function AISalesAssistant() {
     const [trainingContext, setTrainingContext] = useState({
         niche: '',
         product: '',
+        price: '',
         differentiation: '',
         painPoint: '',
         benefits: '',
@@ -49,7 +50,7 @@ function AISalesAssistant() {
         setMessages([
             {
                 role: 'model',
-                text: `¡Listo! He memorizado todo el contexto sobre tu producto (${trainingContext.product}). Soy tu nuevo Vendedor IA con un tono ${trainingContext.tone}. ¿Cómo te puedo ayudar hoy o qué objeción quieres que practiquemos?`
+                text: `¡Listo! He memorizado todo el contexto sobre tu catálogo de productos (${trainingContext.product}) y sus precios. Soy tu nuevo Vendedor IA con un tono ${trainingContext.tone}. ¿Cómo te puedo ayudar hoy o qué objeción quieres que practiquemos?`
             }
         ]);
     };

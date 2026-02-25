@@ -820,7 +820,8 @@ app.post('/api/chat/sales-assistant', async (req, res) => {
         NO TE SALGAS DE TU ROL BAJO NINGUNA CIRCUNSTANCIA.
 
         ======= INSTRUCCIONES ESTRICTAS DEL NEGOCIO (TU CEREBRO) =======
-        - Producto/Servicio que vendes: ${trainingContext.product}
+        - Producto(s) o Servicio(s) que vendes: ${trainingContext.product}
+        - Rango de Precios Oficial (NUNCA INVENTES OTROS PRECIOS): ${trainingContext.price || 'No especificado'}
         - Nicho del negocio: ${trainingContext.niche}
         - Audiencia (A quién le hablas): ${trainingContext.demographics} ${trainingContext.audienceDesc}
         - Diferenciador Principal (Úsalo para presumir sutilmente): ${trainingContext.differentiation}
