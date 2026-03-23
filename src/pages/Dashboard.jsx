@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../services/supabase';
 
 function Dashboard() {
     const { role, user } = useAuth(); // role can be 'workshop', 'pro', 'client', 'admin'
+    const [stats, setStats] = useState({ copies: 0, auditorias: 0, gasto: 0 });
+
+    useEffect(() => {
+        if (!user) return;
+        const fetchStats = async () => {
+            const [copiesRes, metricsRes] = await Promise.all([
+                supabase.from('copy_history').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+                supabase.from('metrics_analysis').select('inputs').eq('user_id', user.id),
+            ]);
+            const copies = copiesRes.count ?? 0;
+            const auditorias = metricsRes.data?.length ?? 0;
+            const gasto = (metricsRes.data ?? []).reduce((acc, row) => {
+                const spend = parseFloat(row.inputs?.spend);
+                return acc + (isNaN(spend) ? 0 : spend);
+            }, 0);
+            setStats({ copies, auditorias, gasto });
+        };
+        fetchStats();
+    }, [user]);
 
     const renderProView = () => (
         <>
@@ -82,15 +102,15 @@ function Dashboard() {
             <div className="grid grid-cols-3 gap-6" style={{ marginBottom: '2rem' }}>
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
                     <h4 style={{ color: 'var(--text-secondary)', fontWeight: 'normal', margin: 0 }}>Copys Generados</h4>
-                    <span style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--accent-color)' }}>0</span>
+                    <span style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--accent-color)' }}>{stats.copies}</span>
                 </div>
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
                     <h4 style={{ color: 'var(--text-secondary)', fontWeight: 'normal', margin: 0 }}>Auditorías Realizadas</h4>
-                    <span style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--warning)' }}>0</span>
+                    <span style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--warning)' }}>{stats.auditorias}</span>
                 </div>
                 <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
                     <h4 style={{ color: 'var(--text-secondary)', fontWeight: 'normal', margin: 0 }}>Gasto Analizado</h4>
-                    <span style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--success)' }}>$0.00</span>
+                    <span style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--success)' }}>${stats.gasto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
             </div>
 
