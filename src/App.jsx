@@ -17,6 +17,7 @@ import ManyChatBuilder from './pages/ManyChatBuilder';
 import BusinessCoach from './pages/BusinessCoach';
 import ClientReport from './pages/ClientReport';
 import AISalesAssistant from './pages/AISalesAssistant';
+import LandingTallerWhatsApp from './pages/LandingTallerWhatsApp';
 
 // Layout Component
 const AppLayout = ({ children }) => {
@@ -139,6 +140,7 @@ function App() {
             <Routes>
                 {/* Public Routes */}
                 <Route path="/login" element={<Login />} />
+                <Route path="/taller-de-ventas-por-whatsapp" element={<LandingTallerWhatsApp />} />
 
                 {/* Protected Routes */}
                 <Route path="/" element={

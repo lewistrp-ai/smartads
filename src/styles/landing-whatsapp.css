@@ -1,0 +1,1007 @@
+/* =========================================================
+   Landing: Taller de Ventas por WhatsApp
+   Paleta inspirada en WhatsApp (verde) con look moderno.
+   Scoped bajo .lwa-page para no chocar con el resto del app.
+   ========================================================= */
+
+.lwa-page {
+    --wa-green: #25d366;
+    --wa-green-dark: #128c7e;
+    --wa-green-deep: #075e54;
+    --wa-teal: #34b7f1;
+    --lwa-bg: #0b141a;
+    --lwa-bg-soft: #111b21;
+    --lwa-bg-card: #1f2c33;
+    --lwa-border: rgba(255, 255, 255, 0.08);
+    --lwa-text: #e9edef;
+    --lwa-text-dim: #aebac1;
+    --lwa-accent: #25d366;
+    --lwa-accent-hover: #1fb457;
+    --lwa-yellow: #ffd166;
+    --lwa-radius: 14px;
+
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: var(--lwa-text);
+    background:
+        radial-gradient(1200px 600px at 85% -10%, rgba(37, 211, 102, 0.18), transparent 60%),
+        radial-gradient(900px 500px at -10% 30%, rgba(18, 140, 126, 0.22), transparent 60%),
+        linear-gradient(180deg, #0b141a 0%, #0a1014 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.lwa-page * {
+    box-sizing: border-box;
+}
+
+.lwa-container {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ---------- NAV ---------- */
+.lwa-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 20, 26, 0.72);
+    border-bottom: 1px solid var(--lwa-border);
+}
+
+.lwa-nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+}
+
+.lwa-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    color: var(--lwa-text);
+}
+
+.lwa-brand__logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--wa-green) 0%, var(--wa-green-dark) 100%);
+    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+    color: white;
+}
+
+.lwa-nav__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--wa-green);
+    color: #06251a;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.lwa-nav__cta:hover {
+    background: var(--lwa-accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(37, 211, 102, 0.35);
+}
+
+/* ---------- HERO ---------- */
+.lwa-hero {
+    padding: 72px 0 48px;
+    position: relative;
+}
+
+.lwa-hero__grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.lwa-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: rgba(37, 211, 102, 0.12);
+    color: #9ff0bd;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid rgba(37, 211, 102, 0.28);
+    margin-bottom: 20px;
+}
+
+.lwa-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--wa-green);
+    box-shadow: 0 0 12px var(--wa-green);
+    animation: lwa-pulse 1.8s infinite;
+}
+
+@keyframes lwa-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.55;
+        transform: scale(1.25);
+    }
+}
+
+.lwa-hero h1 {
+    font-size: clamp(2rem, 4.2vw, 3.4rem);
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+}
+
+.lwa-hero h1 .hl {
+    background: linear-gradient(120deg, #25d366, #34b7f1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.lwa-hero p.lead {
+    font-size: 1.12rem;
+    color: var(--lwa-text-dim);
+    margin: 0 0 28px;
+    max-width: 560px;
+}
+
+.lwa-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 26px;
+}
+
+.lwa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.lwa-btn--primary {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    color: #06251a;
+    box-shadow: 0 14px 30px rgba(37, 211, 102, 0.35);
+}
+
+.lwa-btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(37, 211, 102, 0.45);
+}
+
+.lwa-btn--ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--lwa-border);
+    color: var(--lwa-text);
+}
+
+.lwa-btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lwa-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    color: var(--lwa-text-dim);
+    font-size: 0.9rem;
+}
+
+.lwa-trust span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lwa-trust svg {
+    color: var(--wa-green);
+}
+
+/* Mock WhatsApp chat (hero art) */
+.lwa-chat {
+    background: #0b141a;
+    border: 1px solid var(--lwa-border);
+    border-radius: 22px;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+    max-width: 380px;
+    margin-left: auto;
+    transform: rotate(0.6deg);
+}
+
+.lwa-chat__header {
+    background: linear-gradient(135deg, var(--wa-green-deep), var(--wa-green-dark));
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+}
+
+.lwa-chat__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: #ffd166;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #4b2e00;
+}
+
+.lwa-chat__name {
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.lwa-chat__status {
+    font-size: 0.78rem;
+    opacity: 0.85;
+}
+
+.lwa-chat__body {
+    padding: 18px 14px 22px;
+    background:
+        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 18px 18px,
+        #0b141a;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 320px;
+}
+
+.lwa-bubble {
+    max-width: 82%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    color: #e9edef;
+    position: relative;
+}
+
+.lwa-bubble--in {
+    background: #202c33;
+    border-top-left-radius: 4px;
+    align-self: flex-start;
+}
+
+.lwa-bubble--out {
+    background: #005c4b;
+    border-top-right-radius: 4px;
+    align-self: flex-end;
+}
+
+.lwa-bubble time {
+    display: block;
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 4px;
+    text-align: right;
+}
+
+/* ---------- SECTION DEFAULTS ---------- */
+.lwa-section {
+    padding: 80px 0;
+    position: relative;
+}
+
+.lwa-section--soft {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.0));
+    border-top: 1px solid var(--lwa-border);
+    border-bottom: 1px solid var(--lwa-border);
+}
+
+.lwa-eyebrow {
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    color: var(--wa-green);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.lwa-title {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin: 0 0 14px;
+}
+
+.lwa-subtitle {
+    color: var(--lwa-text-dim);
+    font-size: 1.05rem;
+    max-width: 720px;
+    margin: 0 0 40px;
+}
+
+.lwa-section__head--center {
+    text-align: center;
+}
+
+.lwa-section__head--center .lwa-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------- PAIN GRID ---------- */
+.lwa-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.lwa-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.lwa-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.lwa-card {
+    background: var(--lwa-bg-card);
+    border: 1px solid var(--lwa-border);
+    border-radius: var(--lwa-radius);
+    padding: 26px;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lwa-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(37, 211, 102, 0.35);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.lwa-card h3 {
+    font-size: 1.1rem;
+    margin: 14px 0 6px;
+    font-weight: 700;
+}
+
+.lwa-card p {
+    color: var(--lwa-text-dim);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.lwa-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 211, 102, 0.15);
+    color: var(--wa-green);
+}
+
+.lwa-icon--red {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+/* ---------- BENEFITS LIST ---------- */
+.lwa-benefits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 28px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lwa-benefits li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--lwa-border);
+    border-radius: 12px;
+}
+
+.lwa-benefits li svg {
+    color: var(--wa-green);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.lwa-benefits li strong {
+    display: block;
+    color: var(--lwa-text);
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.lwa-benefits li span {
+    color: var(--lwa-text-dim);
+    font-size: 0.93rem;
+}
+
+/* ---------- TEMARIO ---------- */
+.lwa-modules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.lwa-module {
+    background: var(--lwa-bg-card);
+    border: 1px solid var(--lwa-border);
+    border-left: 4px solid var(--wa-green);
+    border-radius: 12px;
+    padding: 22px 24px;
+    transition: transform 0.25s;
+}
+
+.lwa-module:hover {
+    transform: translateY(-2px);
+}
+
+.lwa-module__num {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--wa-green);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+}
+
+.lwa-module h3 {
+    font-size: 1.15rem;
+    margin: 0 0 10px;
+    font-weight: 700;
+}
+
+.lwa-module ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lwa-module ul li {
+    color: var(--lwa-text-dim);
+    font-size: 0.93rem;
+    padding: 4px 0 4px 18px;
+    position: relative;
+}
+
+.lwa-module ul li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--wa-green);
+}
+
+/* ---------- INSTRUCTOR ---------- */
+.lwa-instructor {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 36px;
+    align-items: center;
+    background: var(--lwa-bg-card);
+    border: 1px solid var(--lwa-border);
+    border-radius: 20px;
+    padding: 36px;
+}
+
+.lwa-instructor__photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 30% 30%, #2c5641 0%, #0a1f16 70%),
+        linear-gradient(135deg, var(--wa-green), var(--wa-green-deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.lwa-instructor__photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 80%, rgba(37, 211, 102, 0.25), transparent 60%);
+}
+
+.lwa-instructor h3 {
+    font-size: 1.6rem;
+    margin: 0 0 6px;
+}
+
+.lwa-instructor__role {
+    color: var(--wa-green);
+    font-weight: 600;
+    margin: 0 0 14px;
+}
+
+.lwa-instructor p {
+    color: var(--lwa-text-dim);
+    margin: 0 0 10px;
+    line-height: 1.6;
+}
+
+.lwa-instructor__creds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.lwa-instructor__creds span {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(37, 211, 102, 0.1);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    color: #9ff0bd;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+/* ---------- PRICE ---------- */
+.lwa-price {
+    max-width: 540px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #14262b, #0d1a1f);
+    border: 1px solid rgba(37, 211, 102, 0.35);
+    border-radius: 22px;
+    padding: 40px 36px;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(37, 211, 102, 0.1) inset;
+    position: relative;
+}
+
+.lwa-price__tag {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--wa-green);
+    color: #06251a;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    padding: 6px 14px;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.lwa-price h3 {
+    font-size: 1.3rem;
+    margin: 0 0 6px;
+}
+
+.lwa-price p.tagline {
+    color: var(--lwa-text-dim);
+    margin: 0 0 22px;
+}
+
+.lwa-price__amount {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.lwa-price__amount .old {
+    color: #718a94;
+    text-decoration: line-through;
+    font-size: 1.1rem;
+}
+
+.lwa-price__amount .new {
+    color: white;
+    font-size: 3.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.lwa-price__amount .cur {
+    color: var(--wa-green);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.lwa-price .installments {
+    color: var(--lwa-text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 22px;
+}
+
+.lwa-price ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 26px;
+    text-align: left;
+}
+
+.lwa-price ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    color: var(--lwa-text);
+    font-size: 0.95rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+}
+
+.lwa-price ul li:last-child {
+    border: none;
+}
+
+.lwa-price ul li svg {
+    color: var(--wa-green);
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.lwa-price__cta {
+    width: 100%;
+    padding: 18px 24px;
+    font-size: 1.05rem;
+}
+
+.lwa-price__note {
+    display: block;
+    margin-top: 12px;
+    color: var(--lwa-text-dim);
+    font-size: 0.82rem;
+}
+
+/* ---------- GUARANTEE ---------- */
+.lwa-guarantee {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(37, 211, 102, 0.1), rgba(52, 183, 241, 0.06));
+    border: 1px solid rgba(37, 211, 102, 0.35);
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.lwa-guarantee__seal {
+    width: 110px;
+    height: 110px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 30% 30%, #2cdf73, #0f6b3e);
+    color: white;
+    font-weight: 800;
+    font-size: 0.72rem;
+    text-align: center;
+    flex-shrink: 0;
+    box-shadow: 0 20px 40px rgba(37, 211, 102, 0.35);
+    border: 4px solid rgba(255, 255, 255, 0.12);
+    padding: 6px;
+    line-height: 1.1;
+}
+
+.lwa-guarantee h3 {
+    margin: 0 0 6px;
+    font-size: 1.25rem;
+}
+
+.lwa-guarantee p {
+    margin: 0;
+    color: var(--lwa-text-dim);
+}
+
+/* ---------- TESTIMONIALS ---------- */
+.lwa-testis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.lwa-testi {
+    background: var(--lwa-bg-card);
+    border: 1px solid var(--lwa-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.lwa-testi__stars {
+    color: #ffd166;
+    letter-spacing: 2px;
+    font-size: 1.05rem;
+}
+
+.lwa-testi p {
+    color: var(--lwa-text);
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.lwa-testi__who {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--lwa-border);
+}
+
+.lwa-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--wa-green), var(--wa-green-deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+}
+
+.lwa-testi__who strong {
+    display: block;
+    font-size: 0.92rem;
+}
+
+.lwa-testi__who span {
+    color: var(--lwa-text-dim);
+    font-size: 0.82rem;
+}
+
+/* ---------- FAQ ---------- */
+.lwa-faq {
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+.lwa-faq details {
+    background: var(--lwa-bg-card);
+    border: 1px solid var(--lwa-border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+}
+
+.lwa-faq details[open] {
+    border-color: rgba(37, 211, 102, 0.35);
+}
+
+.lwa-faq summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--lwa-text);
+}
+
+.lwa-faq summary::-webkit-details-marker {
+    display: none;
+}
+
+.lwa-faq summary::after {
+    content: "+";
+    font-size: 1.4rem;
+    color: var(--wa-green);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.lwa-faq details[open] summary::after {
+    content: "−";
+}
+
+.lwa-faq p {
+    color: var(--lwa-text-dim);
+    margin: 12px 0 0;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* ---------- FINAL CTA ---------- */
+.lwa-final {
+    text-align: center;
+    padding: 80px 24px;
+    background: radial-gradient(circle at 50% 0%, rgba(37, 211, 102, 0.18), transparent 60%);
+    border-top: 1px solid var(--lwa-border);
+}
+
+.lwa-final h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+    margin: 0 0 14px;
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.15;
+}
+
+.lwa-final p {
+    color: var(--lwa-text-dim);
+    max-width: 620px;
+    margin: 0 auto 30px;
+}
+
+/* ---------- FOOTER ---------- */
+.lwa-footer {
+    padding: 30px 0 40px;
+    border-top: 1px solid var(--lwa-border);
+    background: #08120f;
+}
+
+.lwa-footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    color: var(--lwa-text-dim);
+    font-size: 0.88rem;
+}
+
+.lwa-footer a {
+    color: var(--lwa-text-dim);
+    text-decoration: none;
+    margin-left: 16px;
+}
+
+.lwa-footer a:hover {
+    color: var(--wa-green);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 960px) {
+    .lwa-hero {
+        padding: 48px 0 24px;
+    }
+
+    .lwa-hero__grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .lwa-chat {
+        margin: 0 auto;
+    }
+
+    .lwa-grid--3,
+    .lwa-testis,
+    .lwa-modules {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lwa-instructor {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .lwa-instructor__photo {
+        max-width: 220px;
+        margin: 0 auto;
+    }
+
+    .lwa-instructor__creds {
+        justify-content: center;
+    }
+
+    .lwa-guarantee {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .lwa-section {
+        padding: 56px 0;
+    }
+
+    .lwa-grid--3,
+    .lwa-grid--2,
+    .lwa-testis,
+    .lwa-modules,
+    .lwa-benefits {
+        grid-template-columns: 1fr;
+    }
+
+    .lwa-price {
+        padding: 32px 22px;
+    }
+
+    .lwa-price__amount .new {
+        font-size: 2.6rem;
+    }
+}
+
+/* ---------- FLOATING WHATSAPP BUTTON ---------- */
+.lwa-float {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: 58px;
+    height: 58px;
+    border-radius: 999px;
+    background: var(--wa-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    box-shadow: 0 14px 30px rgba(37, 211, 102, 0.45);
+    z-index: 60;
+    transition: transform 0.2s;
+}
+
+.lwa-float:hover {
+    transform: scale(1.08);
+}
+
+.lwa-float::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 999px;
+    border: 2px solid rgba(37, 211, 102, 0.6);
+    animation: lwa-ring 2s infinite;
+}
+
+@keyframes lwa-ring {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: scale(1.35);
+        opacity: 0;
+    }
+}
