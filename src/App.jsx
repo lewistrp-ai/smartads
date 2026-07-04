@@ -17,6 +17,7 @@ import ManyChatBuilder from './pages/ManyChatBuilder';
 import BusinessCoach from './pages/BusinessCoach';
 import ClientReport from './pages/ClientReport';
 import AISalesAssistant from './pages/AISalesAssistant';
+import GrowthLadder from './pages/GrowthLadder';
 
 // Layout Component
 const AppLayout = ({ children }) => {
@@ -108,6 +109,9 @@ const AppLayout = ({ children }) => {
                             </li>
                             <li className="nav-item">
                                 <Link to="/academy" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>🎓 Aprende Meta Ads</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/crecimiento" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>🪜 Escalera de Crecimiento</Link>
                             </li>
 
                             <li className="nav-item mt-4" style={{ marginTop: '1.5rem' }}>
@@ -209,6 +213,14 @@ function App() {
                     <ProtectedRoute allowedRoles={['workshop', 'pro', 'admin']}>
                         <AppLayout>
                             <Academy />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/crecimiento" element={
+                    <ProtectedRoute allowedRoles={['workshop', 'pro', 'client', 'admin']}>
+                        <AppLayout>
+                            <GrowthLadder />
                         </AppLayout>
                     </ProtectedRoute>
                 } />

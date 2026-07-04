@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ACADEMY_LEVELS, getUnlockedLevels } from '../config/ladder';
 import Glosario from '../components/academy/Glosario';
 import Quizzes from '../components/academy/Quizzes';
 import CampaignStructureDiagram from '../components/academy/CampaignStructureDiagram';
 import CampaignStages from '../components/academy/CampaignStages';
 import SimpleMetrics from '../components/academy/SimpleMetrics';
 import VideoLibrary from '../components/academy/VideoLibrary';
+import Certificate from '../components/academy/Certificate';
 
 const Academy = () => {
-    const { user } = useAuth();
+    const { user, role, plan } = useAuth();
+    const navigate = useNavigate();
+    const unlockedLevels = getUnlockedLevels(role, plan);
     const [activeTab, setActiveTab] = useState('ruta'); // 'ruta' | 'videos'
     const [activeModule, setActiveModule] = useState(null);
     const [completedModules, setCompletedModules] = useState([]);
+    const [showCertificate, setShowCertificate] = useState(false);
 
     // Load progress from local storage
     useEffect(() => {
@@ -87,8 +93,59 @@ const Academy = () => {
                 </div>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                     Has completado {completedModules.length} de {totalModules} lecciones.
-                    {progressPercentage === 100 ? ' ¡Felicidades, eres un Maestro! 🏆' : ' Sigue así.'}
+                    {progressPercentage === 100 ? ' ¡Felicidades, completaste el Nivel 1! 🏆' : ' Sigue así.'}
                 </p>
+                {progressPercentage === 100 && (
+                    <button
+                        className="btn"
+                        onClick={() => setShowCertificate(true)}
+                        style={{ alignSelf: 'flex-start', background: 'var(--success)', color: 'black', fontWeight: 'bold' }}
+                    >
+                        🏆 Ver mi certificado
+                    </button>
+                )}
+            </div>
+
+            {/* Escalera de Niveles (formación por niveles con bloqueo) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Ruta de Niveles</h3>
+                <div className="grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                    {ACADEMY_LEVELS.map((level) => {
+                        const isUnlocked = unlockedLevels.includes(level.id);
+                        return (
+                            <div
+                                key={level.id}
+                                className="card"
+                                style={{
+                                    margin: 0, padding: '1.25rem', position: 'relative',
+                                    border: `1px solid ${isUnlocked ? level.color : 'var(--border-color)'}`,
+                                    background: isUnlocked ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.01)',
+                                    opacity: isUnlocked ? 1 : 0.85,
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: level.color, fontWeight: 'bold' }}>
+                                        Nivel {level.id}
+                                    </span>
+                                    <span>{isUnlocked ? '✅' : '🔒'}</span>
+                                </div>
+                                <h4 style={{ margin: '0 0 0.35rem 0', fontSize: '1rem' }}>{level.name.split('·')[1]?.trim() || level.name}</h4>
+                                <p style={{ margin: '0 0 0.85rem 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{level.tagline}</p>
+                                {isUnlocked ? (
+                                    <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>Acceso activo</span>
+                                ) : (
+                                    <button
+                                        className="btn"
+                                        onClick={() => navigate('/crecimiento')}
+                                        style={{ fontSize: '0.8rem', padding: '0.45rem 0.9rem', background: 'transparent', color: level.color, border: `1px solid ${level.color}`, fontWeight: 'bold' }}
+                                    >
+                                        Desbloquear nivel →
+                                    </button>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
             {/* Vertical Progressive Track */}
@@ -187,6 +244,14 @@ const Academy = () => {
 
     return (
         <div className="academy-container animate-fade-in" style={{ padding: '0', maxWidth: activeModule ? '1200px' : '900px', margin: '0 auto', transition: 'max-width 0.3s' }}>
+
+            {showCertificate && (
+                <Certificate
+                    studentName={user?.email?.split('@')[0] || 'Alumno Smart Ads'}
+                    levelName={ACADEMY_LEVELS[0].name}
+                    onClose={() => setShowCertificate(false)}
+                />
+            )}
 
             {/* Main Header / Navigation */}
             {!activeModule && (
