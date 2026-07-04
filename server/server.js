@@ -2,10 +2,34 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { createClient } = require('@supabase/supabase-js');
+const { eventAction, resolveGrant } = require('./hotmartProducts');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// --- SUPABASE ADMIN CLIENT (para actualizar accesos desde webhooks) ---
+// Usa la SERVICE_ROLE key (solo backend, nunca en el frontend).
+const supabaseAdmin = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY)
+    ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false },
+    })
+    : null;
+
+// Busca un usuario de Supabase Auth por su email (paginando la lista de usuarios).
+async function findAuthUserByEmail(email) {
+    const target = String(email).toLowerCase();
+    const perPage = 200;
+    for (let page = 1; page <= 50; page++) { // tope de seguridad (~10k usuarios)
+        const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+        if (error) throw error;
+        const found = data.users.find((u) => (u.email || '').toLowerCase() === target);
+        if (found) return found;
+        if (data.users.length < perPage) break; // última página
+    }
+    return null;
+}
 
 app.use(cors({
     origin: process.env.FRONTEND_URL || '*', // Allows specific Vercel domain in prod, falls back to * for dev
@@ -930,6 +954,78 @@ app.post('/api/whatsapp/webhook', async (req, res) => {
         console.error('Gemini API Webhook Error:', error);
         // We still return 200 to ManyChat so it doesn't fail the flow block completely, but with an error message in the reply
         res.status(200).json({ reply: 'Lo siento, en este momento estoy teniendo problemas técnicos. Por favor, intenta de nuevo más tarde o espera a un humano.' });
+    }
+});
+
+// ----------------------------------------------------
+// 4. HOTMART WEBHOOK (activa el acceso al pagar / lo revoca al cancelar)
+// ----------------------------------------------------
+// Configura esta URL en Hotmart > Herramientas > Webhook (API):
+//   https://TU-BACKEND/api/hotmart/webhook
+// Hotmart firma cada llamada con un token ("Hottok") que validamos abajo.
+app.post('/api/hotmart/webhook', async (req, res) => {
+    // 1. Validar la firma (Hottok) para asegurar que la llamada viene de Hotmart.
+    if (!process.env.HOTMART_HOTTOK) {
+        console.error('Hotmart webhook: falta configurar HOTMART_HOTTOK en el .env');
+        return res.status(500).json({ error: 'Webhook no configurado.' });
+    }
+    const hottok = req.headers['x-hotmart-hottok'] || req.body?.hottok;
+    if (hottok !== process.env.HOTMART_HOTTOK) {
+        console.warn('Hotmart webhook: Hottok inválido, llamada rechazada.');
+        return res.status(401).json({ error: 'Firma inválida.' });
+    }
+
+    const event = req.body?.event;
+    const data = req.body?.data || {};
+    const email = data.buyer?.email;
+    const productId = data.product?.id;
+    const action = eventAction(event);
+
+    // Eventos que no nos interesan (o sin email) se confirman sin hacer nada.
+    if (action === 'ignore' || !email) {
+        return res.status(200).json({ received: true, handled: false, event });
+    }
+
+    if (!supabaseAdmin) {
+        console.error('Hotmart webhook: Supabase admin no configurado (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).');
+        return res.status(200).json({ received: true, handled: false, reason: 'supabase-not-configured' });
+    }
+
+    try {
+        const authUser = await findAuthUserByEmail(email);
+        if (!authUser) {
+            // Compró antes de registrarse en la app. Lo registramos en el log para
+            // conciliarlo manualmente (o cuando se cree la cuenta con ese email).
+            console.warn(`Hotmart webhook: no hay usuario con email ${email} (¿compró antes de registrarse?).`);
+            return res.status(200).json({ received: true, handled: false, reason: 'user-not-found', email });
+        }
+
+        const grant = resolveGrant(productId);
+        let patch = {};
+        if (action === 'grant') {
+            if (grant.role) patch.role = grant.role;
+            if (grant.plan) patch.plan = grant.plan;
+        } else if (action === 'revoke') {
+            // Solo revocamos productos recurrentes (la membresía). Los pagos únicos
+            // (talleres, niveles) dan acceso de por vida y no se tocan al cancelar.
+            if (grant.recurring) patch.plan = 'free';
+        }
+
+        if (Object.keys(patch).length === 0) {
+            return res.status(200).json({ received: true, handled: true, changed: false, event });
+        }
+
+        // upsert por id: crea el perfil si no existe y solo modifica role/plan.
+        const { error } = await supabaseAdmin.from('users').upsert({ id: authUser.id, ...patch });
+        if (error) throw error;
+
+        console.log(`Hotmart webhook: ${action} "${grant.label}" para ${email} ->`, patch);
+        return res.status(200).json({ received: true, handled: true, event, patch });
+    } catch (err) {
+        console.error('Hotmart webhook error:', err.message || err);
+        // Devolvemos 200 para que Hotmart no reintente en bucle por un error interno
+        // nuestro (ya quedó registrado en el log del servidor).
+        return res.status(200).json({ received: true, handled: false, error: 'internal' });
     }
 });
 
