@@ -23,7 +23,7 @@ export const ACADEMY_LEVELS = [
         tagline: 'Crea tu primera campaña rentable desde cero.',
         priceCOP: 156000, // ~USD 39 (oferta de entrada)
         color: 'var(--accent-color)',
-        checkoutUrl: '', // TODO(Fase 2): pegar el checkout de Hotmart real
+        offerId: 'taller', // enlaza con OFFER_LADDER (allí se pega el link de Hotmart)
         topics: [
             'Business Manager y píxel',
             'Segmentación y públicos',
@@ -38,7 +38,7 @@ export const ACADEMY_LEVELS = [
         tagline: 'Escala campañas ganadoras sin quemar presupuesto.',
         priceCOP: 388000, // ~USD 97
         color: 'var(--warning)',
-        checkoutUrl: '',
+        offerId: 'nivel2', // enlaza con OFFER_LADDER (allí se pega el link de Hotmart)
         topics: [
             'Escalamiento horizontal y vertical',
             'Testing avanzado (A/B)',
@@ -54,7 +54,7 @@ export const ACADEMY_LEVELS = [
         tagline: 'Convierte tu operación en un sistema automático.',
         priceCOP: 588000,
         color: 'var(--success)',
-        checkoutUrl: '',
+        offerId: 'nivel3', // enlaza con OFFER_LADDER (allí se pega el link de Hotmart)
         topics: [
             'Automatizaciones de campañas',
             'IA aplicada a creativos y copy',
@@ -88,6 +88,11 @@ export function getUnlockedLevels(role, plan) {
 // -----------------------------------------------------------------------------
 // Escalera completa del ecosistema (lo que se muestra en la página de ofertas).
 // Ordenada de entrada a high ticket. `recurring` marca la membresía.
+//
+// 👉 AQUÍ SE CONECTAN LOS PAGOS: pega el link de checkout de Hotmart de cada
+//    producto en su `checkoutUrl`. Es el ÚNICO lugar que debes editar; los
+//    botones de la escalera, de la Academy y de la oferta final lo usan todos.
+//    (Mientras esté vacío, el botón lleva a la página de ofertas como respaldo.)
 // -----------------------------------------------------------------------------
 export const OFFER_LADDER = [
     {
@@ -169,6 +174,10 @@ export const OFFER_LADDER = [
     },
 ];
 
+// Ofertas que se muestran en el "momento de oro" (al completar el Nivel 1):
+// la membresía recurrente (el corazón del negocio) y el siguiente nivel.
+export const NEXT_STEP_OFFER_IDS = ['smartads', 'nivel2'];
+
 // -----------------------------------------------------------------------------
 // Utilidad: formatear pesos colombianos (ej. 49000 -> "$49.000").
 // -----------------------------------------------------------------------------
@@ -178,4 +187,21 @@ export function formatCOP(value) {
         currency: 'COP',
         maximumFractionDigits: 0,
     }).format(value);
+}
+
+// Devuelve una oferta de la escalera por su id (o null si no existe).
+export function getOffer(id) {
+    return OFFER_LADDER.find((o) => o.id === id) || null;
+}
+
+// Abre el checkout de Hotmart de una oferta en una pestaña nueva.
+// Devuelve true si el link estaba configurado; false si aún no (para que quien
+// lo llame decida el respaldo, p. ej. navegar a la página de ofertas).
+export function openCheckout(offer) {
+    const url = offer && offer.checkoutUrl;
+    if (url) {
+        window.open(url, '_blank', 'noopener');
+        return true;
+    }
+    return false;
 }

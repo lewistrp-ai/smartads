@@ -1,5 +1,5 @@
 import React from 'react';
-import { OFFER_LADDER, formatCOP } from '../config/ladder';
+import { OFFER_LADDER, formatCOP, openCheckout } from '../config/ladder';
 
 // "Mi Escalera de Crecimiento" — muestra el ecosistema completo de ofertas,
 // de la entrada al high ticket. Es la pantalla de upsell que aparece cuando un
@@ -7,10 +7,9 @@ import { OFFER_LADDER, formatCOP } from '../config/ladder';
 // permanente de por dónde puede seguir creciendo con Smart Ads.
 const GrowthLadder = () => {
     const handleCheckout = (offer) => {
-        if (offer.checkoutUrl) {
-            window.open(offer.checkoutUrl, '_blank', 'noopener');
-        } else {
-            // Aún sin checkout de Hotmart configurado (Fase 2).
+        // Abre el checkout de Hotmart si ya está configurado su link.
+        if (!openCheckout(offer)) {
+            // Aún sin link de Hotmart: avisamos en vez de dejar el botón "muerto".
             alert(`Pronto podrás comprar "${offer.name}" aquí. Escríbenos por WhatsApp para reservar tu cupo.`);
         }
     };

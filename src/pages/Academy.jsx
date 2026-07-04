@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ACADEMY_LEVELS, getUnlockedLevels } from '../config/ladder';
+import { ACADEMY_LEVELS, getUnlockedLevels, getOffer, openCheckout, formatCOP, NEXT_STEP_OFFER_IDS } from '../config/ladder';
 import Glosario from '../components/academy/Glosario';
 import Quizzes from '../components/academy/Quizzes';
 import CampaignStructureDiagram from '../components/academy/CampaignStructureDiagram';
@@ -35,6 +35,25 @@ const Academy = () => {
         }
         setActiveModule(null); // Return to list
     };
+
+    // Al pulsar "Desbloquear nivel": abre el checkout de Hotmart de ese nivel.
+    // Si el link aún no está configurado, lleva a la página de ofertas.
+    const unlockLevel = (level) => {
+        const offer = getOffer(level.offerId);
+        if (!openCheckout(offer)) {
+            navigate('/crecimiento');
+        }
+    };
+
+    // Checkout de una oferta cualquiera (con respaldo a la página de ofertas).
+    const goToOffer = (offer) => {
+        if (!openCheckout(offer)) {
+            navigate('/crecimiento');
+        }
+    };
+
+    // Ofertas del "momento de oro" que se muestran al completar el Nivel 1.
+    const nextStepOffers = NEXT_STEP_OFFER_IDS.map(getOffer).filter(Boolean);
 
     // The Official Smart Ads Learning Track
     const curriculum = [
@@ -106,6 +125,53 @@ const Academy = () => {
                 )}
             </div>
 
+            {/* Momento de oro: oferta del siguiente peldaño al completar el Nivel 1 */}
+            {progressPercentage === 100 && nextStepOffers.length > 0 && (
+                <div className="card animate-fade-in" style={{ padding: '1.5rem', border: '1px solid var(--accent-color)', background: 'linear-gradient(180deg, rgba(59,130,246,0.08), transparent 70%)' }}>
+                    <h3 style={{ margin: '0 0 0.35rem 0', fontSize: '1.2rem' }}>🎉 Terminaste el Nivel 1. ¿Sigues subiendo?</h3>
+                    <p style={{ margin: '0 0 1.25rem 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                        Oferta especial para quienes ya dominan los fundamentos. Este es tu siguiente paso:
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                        {nextStepOffers.map((offer) => (
+                            <div
+                                key={offer.id}
+                                style={{
+                                    display: 'flex', flexDirection: 'column', gap: '0.5rem', padding: '1.1rem',
+                                    borderRadius: '0.75rem', background: 'rgba(255,255,255,0.03)',
+                                    border: `1px solid ${offer.highlight ? 'var(--accent-color)' : 'var(--border-color)'}`,
+                                }}
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span style={{ fontSize: '1.5rem' }}>{offer.icon}</span>
+                                    {offer.recurring && <span className="badge badge-success" style={{ fontSize: '0.65rem' }}>Recurrente</span>}
+                                </div>
+                                <h4 style={{ margin: 0, fontSize: '1rem' }}>{offer.name}</h4>
+                                <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)', flex: 1 }}>{offer.subtitle}</p>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.35rem' }}>
+                                    <span style={{ fontWeight: 'bold' }}>
+                                        {formatCOP(offer.priceCOP)}{offer.recurring && <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 'normal' }}>/mes</span>}
+                                    </span>
+                                    <button
+                                        className="btn"
+                                        onClick={() => goToOffer(offer)}
+                                        style={{ fontSize: '0.8rem', padding: '0.45rem 0.9rem', background: 'var(--accent-color)', color: 'black', fontWeight: 'bold' }}
+                                    >
+                                        {offer.cta}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        onClick={() => navigate('/crecimiento')}
+                        style={{ marginTop: '1rem', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.82rem', textDecoration: 'underline', padding: 0 }}
+                    >
+                        Ver toda la escalera de crecimiento →
+                    </button>
+                </div>
+            )}
+
             {/* Escalera de Niveles (formación por niveles con bloqueo) */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Ruta de Niveles</h3>
@@ -136,10 +202,10 @@ const Academy = () => {
                                 ) : (
                                     <button
                                         className="btn"
-                                        onClick={() => navigate('/crecimiento')}
+                                        onClick={() => unlockLevel(level)}
                                         style={{ fontSize: '0.8rem', padding: '0.45rem 0.9rem', background: 'transparent', color: level.color, border: `1px solid ${level.color}`, fontWeight: 'bold' }}
                                     >
-                                        Desbloquear nivel →
+                                        Desbloquear · {formatCOP(level.priceCOP)} →
                                     </button>
                                 )}
                             </div>
