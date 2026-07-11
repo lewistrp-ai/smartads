@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  getTransacciones, eliminarTransaccion,
+  getTransacciones, eliminarTransaccion, exportarCSV,
   CATEGORIAS_EGRESO, CATEGORIAS_INGRESO, CUENTAS, ESTADOS, MONEDAS
 } from '../../services/finanzasService';
 
@@ -82,10 +82,16 @@ export default function Transacciones() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>📋 Transacciones</h1>
           <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '0.85rem' }}>Historial completo de ingresos y egresos</p>
         </div>
-        <Link to="/finanzas/nueva" style={{
-          background: 'var(--accent-color)', color: 'white', padding: '0.5rem 1rem',
-          borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
-        }}>+ Nueva</Link>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => exportarCSV(txsFiltradas, `finanzas-${filtros.anio}-${String(filtros.mes).padStart(2,'0')}.csv`)}
+            style={{ background: 'var(--bg-accent)', color: 'var(--text-secondary)', border: '1px solid var(--border-color)', padding: '0.5rem 0.85rem', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+          >⬇️ Excel</button>
+          <Link to="/finanzas/nueva" style={{
+            background: 'var(--accent-color)', color: 'white', padding: '0.5rem 1rem',
+            borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem'
+          }}>+ Nueva</Link>
+        </div>
       </div>
 
       {/* Filtros */}

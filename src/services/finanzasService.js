@@ -91,3 +91,113 @@ export async function getResumenMensual(anio) {
   if (error) throw error;
   return data;
 }
+
+// ── Presupuestos ──────────────────────────────────────────────────────────────
+export async function getPresupuestos() {
+  const { data, error } = await supabase
+    .from('presupuestos')
+    .select('*')
+    .order('categoria');
+  if (error) throw error;
+  return data;
+}
+
+export async function crearPresupuesto(p) {
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('presupuestos')
+    .insert([{ ...p, user_id: user.id }])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function actualizarPresupuesto(id, p) {
+  const { data, error } = await supabase
+    .from('presupuestos')
+    .update(p)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function eliminarPresupuesto(id) {
+  const { error } = await supabase.from('presupuestos').delete().eq('id', id);
+  if (error) throw error;
+}
+
+// ── Metas de Ahorro ───────────────────────────────────────────────────────────
+export async function getMetas() {
+  const { data: metas, error } = await supabase
+    .from('metas_ahorro')
+    .select('*, aportes_meta(monto, fecha, nota)')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return (metas || []).map(m => ({
+    ...m,
+    aportes: m.aportes_meta || [],
+    acumulado: (m.aportes_meta || []).reduce((s, a) => s + (a.monto || 0), 0)
+  }));
+}
+
+export async function crearMeta(m) {
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('metas_ahorro')
+    .insert([{ ...m, user_id: user.id }])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function actualizarMeta(id, m) {
+  const { data, error } = await supabase
+    .from('metas_ahorro')
+    .update(m)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function eliminarMeta(id) {
+  await supabase.from('aportes_meta').delete().eq('meta_id', id);
+  const { error } = await supabase.from('metas_ahorro').delete().eq('id', id);
+  if (error) throw error;
+}
+
+export async function agregarAporte(metaId, aporte) {
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase
+    .from('aportes_meta')
+    .insert([{ ...aporte, meta_id: metaId, user_id: user.id }])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+// ── Export CSV ─────────────────────────────────────────────────────────────────
+export function exportarCSV(txs, nombreArchivo = 'finanzas.csv') {
+  const cols = ['fecha', 'tipo', 'concepto', 'categoria', 'subcategoria', 'monto', 'moneda', 'cuenta', 'tipo_pago', 'estado', 'notas'];
+  const header = cols.join(',');
+  const rows = txs.map(t =>
+    cols.map(c => {
+      const v = t[c] ?? '';
+      return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
+    }).join(',')
+  );
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombreArchivo;
+  a.click();
+  URL.revokeObjectURL(url);
+}

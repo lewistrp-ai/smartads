@@ -20,6 +20,8 @@ import AISalesAssistant from './pages/AISalesAssistant';
 import FinanzasDashboard from './pages/finanzas/FinanzasDashboard';
 import Transacciones from './pages/finanzas/Transacciones';
 import FormTransaccion from './pages/finanzas/FormTransaccion';
+import Presupuestos from './pages/finanzas/Presupuestos';
+import Metas from './pages/finanzas/Metas';
 
 // Layout Component
 const AppLayout = ({ children }) => {
@@ -86,6 +88,12 @@ const AppLayout = ({ children }) => {
                             </li>
                             <li className="nav-item">
                                 <Link to="/finanzas/nueva" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>➕ Nueva Transacción</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas/presupuestos" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>🎯 Presupuestos</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas/metas" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>🏆 Metas de Ahorro</Link>
                             </li>
 
                             <li className="nav-item mt-4" style={{ marginTop: '1.5rem' }}>
@@ -190,6 +198,21 @@ function App() {
                     <ProtectedRoute>
                         <AppLayout>
                             <FormTransaccion />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/finanzas/presupuestos" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <Presupuestos />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+                <Route path="/finanzas/metas" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <Metas />
                         </AppLayout>
                     </ProtectedRoute>
                 } />
