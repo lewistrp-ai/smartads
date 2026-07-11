@@ -17,6 +17,11 @@ import ManyChatBuilder from './pages/ManyChatBuilder';
 import BusinessCoach from './pages/BusinessCoach';
 import ClientReport from './pages/ClientReport';
 import AISalesAssistant from './pages/AISalesAssistant';
+import FinanzasDashboard from './pages/finanzas/FinanzasDashboard';
+import Transacciones from './pages/finanzas/Transacciones';
+import FormTransaccion from './pages/finanzas/FormTransaccion';
+import Presupuestos from './pages/finanzas/Presupuestos';
+import Metas from './pages/finanzas/Metas';
 
 // Layout Component
 const AppLayout = ({ children }) => {
@@ -72,6 +77,25 @@ const AppLayout = ({ children }) => {
                     {/* Client Role CANNOT see the internal tools */}
                     {role !== 'client' && (
                         <>
+                            <li className="nav-item mt-4" style={{ marginTop: '1.5rem' }}>
+                                <span style={{ fontSize: '0.8rem', color: '#10B981', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>💵 Finanzas</span>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>📊 Dashboard</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas/transacciones" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>📋 Transacciones</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas/nueva" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>➕ Nueva Transacción</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas/presupuestos" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>🎯 Presupuestos</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to="/finanzas/metas" onClick={closeMenu} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>🏆 Metas de Ahorro</Link>
+                            </li>
+
                             <li className="nav-item mt-4" style={{ marginTop: '1.5rem' }}>
                                 <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>🔵 Smart Ads Lab</span>
                             </li>
@@ -145,6 +169,50 @@ function App() {
                     <ProtectedRoute>
                         <AppLayout>
                             <Dashboard />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/finanzas" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <FinanzasDashboard />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+                <Route path="/finanzas/transacciones" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <Transacciones />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+                <Route path="/finanzas/nueva" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <FormTransaccion />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+                <Route path="/finanzas/editar/:id" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <FormTransaccion />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+
+                <Route path="/finanzas/presupuestos" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <Presupuestos />
+                        </AppLayout>
+                    </ProtectedRoute>
+                } />
+                <Route path="/finanzas/metas" element={
+                    <ProtectedRoute>
+                        <AppLayout>
+                            <Metas />
                         </AppLayout>
                     </ProtectedRoute>
                 } />
