@@ -7,6 +7,7 @@ const { chromium } = require('playwright');
 const [claudePath, metaPath] = process.argv.slice(2).map(p => fs.readFileSync(p, 'utf8').trim());
 const OUT = __dirname;
 const HANDLE = '@lewispinedadigital';
+const thumb = fs.readFileSync(path.join(__dirname, 'miniatura-tutorial.png')).toString('base64');
 
 const claudeLogo = (s, c = '#D97757') =>
   `<svg width="${s}" height="${s}" viewBox="0 0 24 24"><path fill="${c}" d="${claudePath}"/></svg>`;
@@ -81,12 +82,10 @@ const slides = [
    <p class="tip">Claude lee los números. Tú decides dónde va la plata.</p>`,
   // 9. CTA
   `<div class="cta">
-     ${logos(96)}
      <h2>¿Quieres el <span class="c">paso a paso</span> completo?</h2>
-     <p class="lead">Comenta</p>
-     <div class="keyword">CLAUDE</div>
-     <p class="lead">y te envío un tutorial de cómo crear<br>tu campaña en <span class="o">Meta</span> con <span class="c">Claude</span> desde cero.</p>
-     <div class="pill">Guárdalo · Compártelo con tu equipo</div>
+     <div class="video"><img src="data:image/png;base64,${thumb}"><span class="play">▶</span></div>
+     <div class="cta-row"><span class="lead">Comenta</span><div class="keyword">CLAUDE</div></div>
+     <p class="lead">y te envío el tutorial para crear tu campaña<br>en <span class="o">Meta</span> con <span class="c">Claude</span> desde cero.</p>
    </div>`,
 ];
 
@@ -135,6 +134,14 @@ h2{font-family:'Inter Display';font-weight:800;font-size:78px;line-height:1.05;l
 .cta .pill{align-self:center}
 .keyword{margin-top:24px;font-family:'Inter Display';font-weight:900;font-size:140px;letter-spacing:4px;color:#141413;background:var(--c);padding:6px 56px;border-radius:32px}
 .cta .lead{margin-top:24px}
+.cta h2{font-size:68px}
+.video{position:relative;width:888px;height:500px;margin-top:48px;border-radius:28px;overflow:hidden;border:3px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(8,102,255,.25)}
+.video img{width:100%;height:100%;object-fit:cover;display:block}
+.play{position:absolute;right:26px;bottom:26px;width:96px;height:96px;border-radius:50%;background:rgba(217,119,87,.95);color:#fff;font-size:42px;display:flex;align-items:center;justify-content:center;padding-left:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.tag{position:absolute;top:22px;left:22px;background:#141413;color:var(--text);font-family:'JetBrains Mono';font-size:22px;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;border-radius:12px}
+.cta-row{display:flex;align-items:center;gap:28px;margin-top:48px}
+.cta-row .lead{margin:0;font-size:44px;color:var(--text);font-weight:600}
+.cta-row .keyword{margin:0;font-size:100px;padding:4px 40px}
 </style></head><body>
 ${slides.map((s, i) => `<section class="slide" id="s${i + 1}">
   ${i === 0 ? '' : `<div class="top">${logos(44)}<span class="count">${pad(i + 1)}/${pad(total)}</span></div>`}
