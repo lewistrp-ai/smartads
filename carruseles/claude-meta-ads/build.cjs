@@ -82,10 +82,10 @@ const slides = [
   // 9. CTA
   `<div class="cta">
      ${logos(96)}
-     <h2>¿Quieres los <span class="c">6 prompts</span> en un PDF?</h2>
+     <h2>¿Quieres el <span class="c">paso a paso</span> completo?</h2>
      <p class="lead">Comenta</p>
      <div class="keyword">CLAUDE</div>
-     <p class="lead">y te los envío por DM.</p>
+     <p class="lead">y te envío un tutorial de cómo crear<br>tu campaña en <span class="o">Meta</span> con <span class="c">Claude</span> desde cero.</p>
      <div class="pill">Guárdalo · Compártelo con tu equipo</div>
    </div>`,
 ];
