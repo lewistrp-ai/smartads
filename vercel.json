@@ -1,9 +1,21 @@
 {
   "functions": {
-    "api/index.js": { "maxDuration": 300 }
+    "api/index.js": {
+      "maxDuration": 300
+    }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" },
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/taller-meta-ads",
+      "destination": "/taller-meta-ads/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ]
 }

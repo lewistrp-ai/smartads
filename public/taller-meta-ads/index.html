@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taller Presencial de Meta Ads para Negocios Físicos | Lewis Pineda</title>
+  <meta name="description" content="Taller presencial de Meta Ads para dueños de negocios físicos en Colombia. Aprende a crear campañas en Facebook e Instagram que traen clientes a tu WhatsApp y a tu local.">
+  <meta property="og:title" content="Taller Presencial de Meta Ads para Negocios Físicos">
+  <meta property="og:description" content="En un día sales con tu campaña montada y sabiendo cómo atraer clientes a tu local desde Facebook e Instagram.">
+  <meta name="theme-color" content="#0B1224">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Colores de marca: cambia aquí y se actualiza toda la página ===== */
+    :root {
+      --bg: #0B1224;          /* azul noche */
+      --bg-alt: #111A33;      /* azul noche claro */
+      --card: #16213F;
+      --line: #26345C;
+      --text: #F5F7FB;
+      --muted: #A3AECB;
+      --brand: #3B82F6;       /* azul eléctrico */
+      --brand-2: #22D3EE;     /* cian */
+      --accent: #FACC15;      /* amarillo para resaltar */
+      --wa: #25D366;          /* verde WhatsApp */
+      --wa-dark: #1DA851;
+      --danger: #F87171;
+      --radius: 18px;
+      --wrap: 1080px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 84px; /* espacio para el botón fijo en celular */
+    }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; line-height: 1.15; letter-spacing: -0.02em; }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    .wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+    section { padding: 72px 0; }
+    .alt { background: var(--bg-alt); }
+    .eyebrow {
+      display: inline-block; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--brand-2); margin-bottom: 14px;
+    }
+    .section-title { font-size: clamp(28px, 6vw, 42px); margin-bottom: 16px; }
+    .section-lead { color: var(--muted); font-size: 18px; max-width: 680px; }
+    .hl { color: var(--accent); }
+
+    /* ===== Botones ===== */
+    .btn-wa {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--wa); color: #06281A; font-weight: 700; font-size: 18px; text-decoration: none;
+      padding: 17px 28px; border-radius: 999px; min-height: 56px;
+      box-shadow: 0 10px 30px -8px rgba(37, 211, 102, .55);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .btn-wa:hover { background: var(--wa-dark); transform: translateY(-2px); }
+    .btn-wa svg { width: 24px; height: 24px; flex-shrink: 0; }
+    @media (max-width: 719px) {
+      .hero .btn-wa, .final .btn-wa { width: 100%; padding: 16px 18px; font-size: 17px; }
+      .hero { padding-top: 96px; }
+    }
+    .btn-note { color: var(--muted); font-size: 14px; margin-top: 12px; }
+
+    /* ===== Encabezado ===== */
+    header.top { position: absolute; top: 0; left: 0; right: 0; z-index: 5; padding: 18px 0; }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; text-decoration: none; }
+    .logo span { color: var(--brand); }
+    .top-link { font-size: 15px; font-weight: 600; color: var(--wa); text-decoration: none; }
+
+    /* ===== Titular ===== */
+    .hero {
+      position: relative; overflow: hidden; padding: 120px 0 80px;
+      background:
+        radial-gradient(800px 400px at 85% -10%, rgba(59,130,246,.35), transparent 60%),
+        radial-gradient(600px 300px at -10% 110%, rgba(34,211,238,.18), transparent 60%),
+        var(--bg);
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600;
+      background: rgba(59,130,246,.15); color: #BFD6FF; border: 1px solid rgba(59,130,246,.4);
+      padding: 7px 14px; border-radius: 999px; margin-bottom: 22px;
+    }
+    .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--wa); box-shadow: 0 0 0 4px rgba(37,211,102,.2); }
+    .hero h1 { font-size: clamp(34px, 8.5vw, 62px); font-weight: 800; max-width: 860px; margin-bottom: 20px; }
+    .hero h1 .grad { background: linear-gradient(90deg, var(--brand), var(--brand-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p.sub { font-size: clamp(18px, 4.4vw, 21px); color: #CBD5EE; max-width: 640px; margin-bottom: 30px; }
+    .hero-facts { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 34px; color: var(--muted); font-size: 15px; }
+    .hero-facts li { list-style: none; display: flex; align-items: center; gap: 8px; }
+    .hero-facts svg { width: 18px; height: 18px; color: var(--brand-2); flex-shrink: 0; }
+
+    /* ===== Problema ===== */
+    .pain-grid { display: grid; gap: 14px; margin-top: 34px; }
+    .pain {
+      display: flex; gap: 14px; align-items: flex-start; background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 18px 20px;
+    }
+    .pain .x {
+      flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(248,113,113,.14); color: var(--danger); font-weight: 800;
+    }
+    .pain p { color: #DCE3F5; }
+    .callout {
+      margin-top: 28px; padding: 20px 22px; border-left: 4px solid var(--accent); background: rgba(250,204,21,.07);
+      border-radius: 0 var(--radius) var(--radius) 0; font-size: 18px;
+    }
+
+    /* ===== Solución ===== */
+    .steps { display: grid; gap: 16px; margin-top: 36px; counter-reset: step; }
+    .step {
+      position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 22px 22px 22px 78px;
+    }
+    .step::before {
+      counter-increment: step; content: counter(step);
+      position: absolute; left: 20px; top: 20px; width: 42px; height: 42px; border-radius: 12px;
+      display: grid; place-items: center; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 20px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #fff;
+    }
+    .step h3 { font-size: 20px; margin-bottom: 6px; }
+    .step p { color: var(--muted); }
+    .for-who { margin-top: 40px; }
+    .for-who h3 { font-size: 22px; margin-bottom: 14px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tags span { background: rgba(59,130,246,.12); border: 1px solid var(--line); padding: 8px 14px; border-radius: 999px; font-size: 15px; }
+
+    /* ===== Prueba ===== */
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 34px; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 18px; text-align: center; }
+    .stat b { display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(28px, 7vw, 40px); color: var(--accent); line-height: 1.1; }
+    .stat span { color: var(--muted); font-size: 15px; }
+    .testimonials { display: grid; gap: 16px; margin-top: 26px; }
+    .quote { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+    .quote p { font-size: 17px; margin-bottom: 14px; }
+    .quote .who { color: var(--muted); font-size: 14px; }
+    .quote .who b { color: var(--text); }
+    .about {
+      margin-top: 30px; display: flex; gap: 18px; align-items: center; background: var(--card);
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 20px;
+    }
+    .avatar {
+      flex-shrink: 0; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2)); font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 24px;
+    }
+    .about p { color: var(--muted); font-size: 15px; }
+    .about h3 { font-size: 18px; margin-bottom: 4px; }
+
+    /* ===== Oferta ===== */
+    .offer {
+      margin-top: 34px; background: linear-gradient(180deg, #172650, var(--card)); border: 2px solid var(--brand);
+      border-radius: 24px; padding: 30px 22px; box-shadow: 0 30px 60px -30px rgba(59,130,246,.6);
+    }
+    .offer .badge { display: inline-block; background: var(--accent); color: #1A1400; font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 999px; margin-bottom: 14px; }
+    .offer h3 { font-size: 26px; margin-bottom: 18px; }
+    .includes { list-style: none; display: grid; gap: 12px; margin-bottom: 26px; }
+    .includes li { display: flex; gap: 12px; align-items: flex-start; }
+    .includes svg { flex-shrink: 0; width: 22px; height: 22px; color: var(--wa); margin-top: 2px; }
+    .price-box { border-top: 1px dashed var(--line); padding-top: 22px; margin-bottom: 22px; }
+    .price-label { color: var(--muted); font-size: 15px; }
+    .price { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: clamp(40px, 11vw, 56px); line-height: 1.1; }
+    .price small { font-size: 18px; color: var(--muted); font-weight: 600; }
+    .price-sub { color: #CBD5EE; font-size: 15px; margin-top: 6px; }
+    .event-info { display: grid; gap: 10px; margin-bottom: 24px; font-size: 16px; }
+    .event-info div { display: flex; gap: 10px; }
+    .event-info b { min-width: 72px; color: var(--muted); font-weight: 500; }
+    .offer .btn-wa { width: 100%; }
+    .scarcity { text-align: center; color: var(--accent); font-size: 14px; font-weight: 600; margin-top: 14px; }
+
+    /* ===== Preguntas frecuentes ===== */
+    .faq { margin-top: 30px; display: grid; gap: 12px; }
+    details { background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+    summary {
+      cursor: pointer; list-style: none; padding: 18px 52px 18px 20px; position: relative; font-weight: 600; font-size: 17px;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: '+'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+      font-size: 26px; font-weight: 400; color: var(--brand-2); transition: transform .2s ease;
+    }
+    details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+    details p { padding: 0 20px 20px; color: var(--muted); }
+
+    /* ===== Cierre ===== */
+    .final { text-align: center; }
+    .final .section-lead { margin: 0 auto 28px; }
+    footer { padding: 30px 0 20px; text-align: center; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+
+    /* ===== Botón fijo en celular ===== */
+    .sticky-cta {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(11,18,36,.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid var(--line); transform: translateY(110%); transition: transform .25s ease;
+    }
+    .sticky-cta.show { transform: translateY(0); }
+    .sticky-cta .btn-wa { width: 100%; font-size: 17px; padding: 14px 20px; min-height: 52px; }
+
+    /* ===== Tablet y escritorio ===== */
+    @media (min-width: 720px) {
+      section { padding: 96px 0; }
+      .pain-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .stats { grid-template-columns: repeat(4, 1fr); }
+      .testimonials { grid-template-columns: repeat(3, 1fr); }
+      .offer { padding: 40px; max-width: 620px; margin-left: auto; margin-right: auto; }
+      .offer-head { text-align: center; }
+      .offer-head .section-lead { margin: 0 auto; }
+      body { padding-bottom: 0; }
+      .sticky-cta { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================================================================
+       DATOS DEL TALLER: edita solo esta parte (fecha, lugar, precio, cupos)
+       ================================================================== -->
+  <script>
+    window.TALLER = {
+      whatsapp: '573116962961',
+      mensaje: 'Hola Lewis, quiero información del Taller Presencial de Meta Ads para mi negocio 🙌',
+      fecha: 'Próxima fecha: escríbeme y te la confirmo',   // ej: 'Sábado 5 de diciembre de 2026'
+      horario: '8:00 a. m. a 5:00 p. m.',                     // ej: '8:00 a. m. a 5:00 p. m.'
+      lugar: 'Medellín (te envío la dirección al reservar)',   // ej: 'Coworking Home Tree, Medellín'
+      precio: '$280.000',
+      precioNota: 'Separa tu cupo con el 50 % y paga el resto antes del taller.',
+      cupos: 'Cupos limitados: grupos pequeños para revisar cada negocio',
+      // Testimonios reales (con permiso). Mientras esté vacío, la sección no los muestra.
+      testimonios: [
+        // { texto: '...', nombre: 'Nombre', negocio: 'Tipo de negocio, Ciudad' },
+      ],
+    };
+  </script>
+
+  <header class="top">
+    <div class="wrap">
+      <a class="logo" href="#">Lewis<span>.</span>Ads</a>
+      <a class="top-link js-wa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </header>
+
+  <!-- ===== 1. Titular ===== -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="pill"><span class="dot"></span> Taller presencial · Cupos limitados</div>
+      <h1>Llena tu local de clientes con <span class="grad">Facebook e Instagram</span>, sin depender de una agencia</h1>
+      <p class="sub">Un taller presencial de un día para dueños de negocios físicos en Colombia. Sales con tu primera campaña de Meta Ads montada y sabiendo cómo hacer que te escriban al WhatsApp y te visiten.</p>
+      <a class="btn-wa js-wa" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.82-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47a9.4 9.4 0 0 1 6.7 2.78 9.4 9.4 0 0 1 2.77 6.7c0 5.23-4.25 9.48-9.47 9.48zm8.06-17.54A11.33 11.33 0 0 0 12.04.62C5.76.62.65 5.73.65 12.01c0 2 .52 3.96 1.52 5.69L.55 23.6l6.04-1.58a11.36 11.36 0 0 0 5.44 1.39h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg>
+        Quiero mi cupo por WhatsApp
+      </a>
+      <p class="btn-note">Te respondo personalmente y te cuento fecha, lugar y cómo reservar.</p>
+      <ul class="hero-facts">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>100 % práctico, con tu propia cuenta</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Desde cero, sin saber de marketing</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Talleres presenciales desde 2024</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 2. Problema ===== -->
+  <section class="alt" id="problema">
+    <div class="wrap">
+      <span class="eyebrow">El problema</span>
+      <h2 class="section-title">Tienes un buen negocio, pero no entra suficiente gente</h2>
+      <p class="section-lead">Si tienes una tienda, un restaurante, una peluquería o un consultorio, seguro te pasa alguna de estas:</p>
+      <div class="pain-grid">
+        <div class="pain"><div class="x">✕</div><p>Le das <b>“Promocionar”</b> a una publicación, se va la plata y no llega ni un cliente.</p></div>
+        <div class="pain"><div class="x">✕</div><p>Publicas todos los días en Instagram y los <b>“me gusta”</b> no se convierten en ventas.</p></div>
+        <div class="pain"><div class="x">✕</div><p>Te escriben preguntando <b>“¿precio?”</b> y nunca vuelven a responder.</p></div>
+        <div class="pain"><div class="x">✕</div><p>Pagaste a alguien para que te manejara las redes y <b>no supiste qué hizo con tu plata</b>.</p></div>
+        <div class="pain"><div class="x">✕</div><p>Entras al Administrador de Anuncios y te pierdes entre <b>campañas, públicos y píxeles</b>.</p></div>
+        <div class="pain"><div class="x">✕</div><p>Ves que tu competencia sí sale en Facebook e Instagram y <b>te está quitando clientes</b>.</p></div>
+      </div>
+      <p class="callout">El problema no es tu negocio ni que “la publicidad no funcione”. Es que nadie te enseñó a <b>montar una campaña pensada para un negocio con local</b>.</p>
+    </div>
+  </section>
+
+  <!-- ===== 3. Solución ===== -->
+  <section id="solucion">
+    <div class="wrap">
+      <span class="eyebrow">La solución</span>
+      <h2 class="section-title">Un día, en persona, con tu negocio y tu celular</h2>
+      <p class="section-lead">No es una charla de teoría. Trabajamos sobre tu propio negocio y te vas con todo funcionando.</p>
+      <div class="steps">
+        <div class="step"><h3>Ordenas tu cuenta</h3><p>Configuramos tu página, tu Instagram y tu Administrador de Anuncios para que todo quede conectado y a tu nombre.</p></div>
+        <div class="step"><h3>Defines a quién venderle</h3><p>Aprendes a llegarle a la gente cercana a tu local que de verdad puede comprarte, no a cualquiera.</p></div>
+        <div class="step"><h3>Creas anuncios que detienen el scroll</h3><p>Fotos, videos y textos sencillos hechos con el celular que hacen que la gente pare y pregunte.</p></div>
+        <div class="step"><h3>Lanzas campañas a WhatsApp</h3><p>Montas tu campaña para que los clientes te escriban directo al WhatsApp y te visiten.</p></div>
+        <div class="step"><h3>Lees los resultados</h3><p>Entiendes qué números mirar para saber si tu plata está trayendo clientes o se está perdiendo.</p></div>
+        <div class="step"><h3>Conviertes mensajes en ventas</h3><p>Cómo responder y hacer seguimiento por WhatsApp para que la conversación termine en venta.</p></div>
+      </div>
+      <div class="for-who">
+        <h3>Es para ti si tienes…</h3>
+        <div class="tags">
+          <span>Tienda de ropa o accesorios</span><span>Restaurante o cafetería</span><span>Peluquería, barbería o spa</span>
+          <span>Consultorio o centro estético</span><span>Gimnasio</span><span>Ferretería o almacén</span><span>Cualquier negocio con local</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. Prueba ===== -->
+  <section class="alt" id="prueba">
+    <div class="wrap">
+      <span class="eyebrow">La prueba</span>
+      <h2 class="section-title">Dueños de negocio como tú ya pasaron por el taller</h2>
+      <p class="section-lead">Lo he dictado en persona desde 2024, edición tras edición, con emprendedores y negocios locales de Colombia.</p>
+      <div class="stats">
+        <div class="stat"><b>2024</b><span>dictando talleres presenciales</span></div>
+        <div class="stat"><b>1 día</b><span>intensivo y práctico</span></div>
+        <div class="stat"><b>100 %</b><span>con tu propio negocio</span></div>
+        <div class="stat"><b>✓</b><span>certificado de asistencia</span></div>
+      </div>
+      <div class="testimonials" id="testimonios" hidden></div>
+      <div class="about">
+        <div class="avatar">LP</div>
+        <div>
+          <h3>Lewis Pineda</h3>
+          <p>Trafficker y consultor de Meta Ads. Monto y gestiono campañas para negocios locales y enseño a sus dueños a hacerlo solos, con un método simple y sin tecnicismos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. Oferta ===== -->
+  <section id="oferta">
+    <div class="wrap">
+      <div class="offer-head">
+        <span class="eyebrow">La oferta</span>
+        <h2 class="section-title">Todo lo que recibes</h2>
+        <p class="section-lead">Una inversión menor a lo que muchos pierden en un mes de “promocionar” publicaciones sin estrategia.</p>
+      </div>
+      <div class="offer">
+        <span class="badge">Taller presencial</span>
+        <h3>Taller de Meta Ads para Negocios Físicos</h3>
+        <ul class="includes">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Jornada completa, práctica y en grupo pequeño</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Tu primera campaña a WhatsApp montada ese mismo día</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Revisión personalizada de tu página, Instagram y anuncios</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Plantillas de textos y guiones para tus anuncios</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Refrigerio durante el taller</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Certificado de asistencia</span></li>
+        </ul>
+        <div class="event-info">
+          <div><b>Fecha</b><span data-taller="fecha"></span></div>
+          <div><b>Horario</b><span data-taller="horario"></span></div>
+          <div><b>Lugar</b><span data-taller="lugar"></span></div>
+        </div>
+        <div class="price-box">
+          <div class="price-label">Inversión</div>
+          <div class="price"><span data-taller="precio"></span> <small>COP</small></div>
+          <p class="price-sub" data-taller="precioNota"></p>
+        </div>
+        <a class="btn-wa js-wa" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.82-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47a9.4 9.4 0 0 1 6.7 2.78 9.4 9.4 0 0 1 2.77 6.7c0 5.23-4.25 9.48-9.47 9.48zm8.06-17.54A11.33 11.33 0 0 0 12.04.62C5.76.62.65 5.73.65 12.01c0 2 .52 3.96 1.52 5.69L.55 23.6l6.04-1.58a11.36 11.36 0 0 0 5.44 1.39h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg>
+          Reservar mi cupo
+        </a>
+        <p class="scarcity" data-taller="cupos"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 6. Preguntas frecuentes ===== -->
+  <section class="alt" id="faq">
+    <div class="wrap">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2 class="section-title">Resolvemos tus dudas</h2>
+      <div class="faq">
+        <details><summary>No sé nada de marketing ni de anuncios, ¿me sirve?</summary><p>Sí. El taller arranca desde cero y está pensado para dueños de negocio, no para expertos. Si sabes usar WhatsApp y Facebook en el celular, puedes seguirlo.</p></details>
+        <details><summary>¿Qué debo llevar?</summary><p>Tu celular cargado y, si puedes, un portátil. También el acceso a la página de Facebook y al Instagram de tu negocio. Antes del taller te envío una lista para que llegues listo.</p></details>
+        <details><summary>¿Cuánto debo invertir en publicidad después del taller?</summary><p>Puedes empezar con un presupuesto pequeño, desde lo que gastarías en un domicilio al día. En el taller te enseño a definir cuánto invertir según tu negocio y a subirlo solo cuando veas resultados.</p></details>
+        <details><summary>¿Me garantizan ventas?</summary><p>Nadie honesto puede garantizar ventas: dependen de tu producto, tu precio y tu atención. Lo que sí te llevas es el método y tu campaña montada correctamente, para que tu plata en publicidad trabaje a tu favor.</p></details>
+        <details><summary>¿Cómo reservo y cómo pago?</summary><p>Escríbeme por WhatsApp y te envío los datos de pago. Separas tu cupo con el 50 % y pagas el resto antes del taller.</p></details>
+        <details><summary>¿Puedo ir con mi socio o con alguien de mi equipo?</summary><p>Claro. Pregúntame por WhatsApp por el valor para acompañantes del mismo negocio.</p></details>
+        <details><summary>¿Y si no puedo asistir el día del taller?</summary><p>Avísame con anticipación por WhatsApp y miramos pasar tu cupo a la siguiente fecha.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Cierre ===== -->
+  <section class="final">
+    <div class="wrap">
+      <h2 class="section-title">Tu próximo cliente ya está en Instagram. <span class="hl">Aprende a llegarle.</span></h2>
+      <p class="section-lead">Los cupos son limitados para poder revisar cada negocio. Escríbeme y te reservo el tuyo.</p>
+      <a class="btn-wa js-wa" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.82-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47a9.4 9.4 0 0 1 6.7 2.78 9.4 9.4 0 0 1 2.77 6.7c0 5.23-4.25 9.48-9.47 9.48zm8.06-17.54A11.33 11.33 0 0 0 12.04.62C5.76.62.65 5.73.65 12.01c0 2 .52 3.96 1.52 5.69L.55 23.6l6.04-1.58a11.36 11.36 0 0 0 5.44 1.39h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg>
+        Escribir por WhatsApp
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">© <span id="year"></span> Lewis Pineda · Taller de Meta Ads · WhatsApp 311 696 2961</div>
+  </footer>
+
+  <div class="sticky-cta" id="sticky">
+    <a class="btn-wa js-wa" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.75-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.04 21.5h-.01a9.45 9.45 0 0 1-4.82-1.32l-.35-.2-3.58.94.96-3.49-.23-.36a9.43 9.43 0 0 1-1.45-5.03c0-5.22 4.25-9.47 9.48-9.47a9.4 9.4 0 0 1 6.7 2.78 9.4 9.4 0 0 1 2.77 6.7c0 5.23-4.25 9.48-9.47 9.48zm8.06-17.54A11.33 11.33 0 0 0 12.04.62C5.76.62.65 5.73.65 12.01c0 2 .52 3.96 1.52 5.69L.55 23.6l6.04-1.58a11.36 11.36 0 0 0 5.44 1.39h.01c6.28 0 11.39-5.11 11.39-11.39 0-3.04-1.18-5.9-3.33-8.05z"/></svg>
+      Quiero mi cupo
+    </a>
+  </div>
+
+  <script>
+    (function () {
+      var t = window.TALLER;
+      var waUrl = 'https://wa.me/' + t.whatsapp + '?text=' + encodeURIComponent(t.mensaje);
+      document.querySelectorAll('.js-wa').forEach(function (a) { a.href = waUrl; });
+
+      document.querySelectorAll('[data-taller]').forEach(function (el) {
+        var value = t[el.getAttribute('data-taller')];
+        if (value) el.textContent = value; else el.closest('div, p').hidden = true;
+      });
+
+      var box = document.getElementById('testimonios');
+      if (t.testimonios && t.testimonios.length) {
+        t.testimonios.forEach(function (q) {
+          var card = document.createElement('div');
+          card.className = 'quote';
+          var p = document.createElement('p'); p.textContent = '“' + q.texto + '”';
+          var who = document.createElement('div'); who.className = 'who';
+          var b = document.createElement('b'); b.textContent = q.nombre;
+          who.appendChild(b); who.appendChild(document.createTextNode(' · ' + q.negocio));
+          card.appendChild(p); card.appendChild(who); box.appendChild(card);
+        });
+        box.hidden = false;
+      }
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Muestra el botón fijo cuando el botón principal sale de la pantalla
+      var sticky = document.getElementById('sticky');
+      var heroBtn = document.querySelector('.hero .btn-wa');
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          sticky.classList.toggle('show', !entries[0].isIntersecting);
+        }).observe(heroBtn);
+      } else {
+        sticky.classList.add('show');
+      }
+    })();
+  </script>
+</body>
+</html>
