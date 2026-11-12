@@ -48,7 +48,7 @@ function MetricsAnalysis() {
         setIsFetchingCampaigns(true);
         setFetchError('');
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/meta/campaigns`);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/meta/campaigns`);
             const data = response.data;
             if (data.success && data.campaigns.length > 0) {
                 setCampaigns(data.campaigns);
@@ -69,7 +69,7 @@ function MetricsAnalysis() {
         setIsFetching(true);
         setFetchError('');
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/meta/insights`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/meta/insights`, {
                 campaignId: selectedCampaignId || undefined // undefined defaults to account level in backend if empty
             });
             const data = response.data;
@@ -201,7 +201,7 @@ function MetricsAnalysis() {
         setIsChatting(true);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/analyze`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/analyze`, {
                 message: newUserMessage.content,
                 metricsContext: { ...metrics, diagnosis },
                 history: chatHistory

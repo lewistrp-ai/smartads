@@ -36,7 +36,7 @@ function ClientReport() {
         setIsFetchingCampaigns(true);
         setError('');
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/meta/campaigns`);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/meta/campaigns`);
             const data = response.data;
             if (data.success && data.campaigns.length > 0) {
                 setCampaigns(data.campaigns);
@@ -58,7 +58,7 @@ function ClientReport() {
         setError('');
         setGeneratedReport(null);
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/meta/insights`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/meta/insights`, {
                 campaignId: selectedCampaignId || undefined // Cuenta completa si se envía blank
             });
             const data = response.data;
@@ -97,7 +97,7 @@ function ClientReport() {
         setError('');
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/generate-report`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/generate-report`, {
                 clientName: reportData.clientName,
                 timeframe: reportData.timeframe,
                 objective: reportData.objective,

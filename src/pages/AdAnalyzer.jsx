@@ -60,7 +60,7 @@ function AdAnalyzer() {
         }
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/vision/analyze-ad`, formData, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/vision/analyze-ad`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }

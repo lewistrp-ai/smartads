@@ -72,7 +72,7 @@ function BusinessCoach() {
                 !(msg.role === 'ai' && msg.content.includes('Hubo un error'))
             );
 
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/business-coach`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/business-coach`, {
                 message: chatInput,
                 profileContext: isProfileSaved ? profile : null, // Send context only if it's "saved/active"
                 history: cleanHistory

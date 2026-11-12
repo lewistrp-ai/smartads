@@ -60,7 +60,7 @@ function AISalesAssistant() {
         setIsLoading(true);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/sales-assistant`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/sales-assistant`, {
                 trainingContext,
                 history: updatedHistory
             });

@@ -23,7 +23,7 @@ function ManyChatBuilder() {
         setResults(null);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/generate-manychat-flow`, formData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/generate-manychat-flow`, formData);
             if (response.data.success) {
                 setResults(response.data.data);
             }

@@ -70,7 +70,7 @@ function CopyGenerator() {
         setChatHistory([]); // Reset chat when generating new copies
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/generate-copy`, formData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/generate-copy`, formData);
             if (response.data.success) {
                 const generatedData = response.data.data;
                 setResults(generatedData);
@@ -109,7 +109,7 @@ function CopyGenerator() {
         setChatHistory([]); // Reset chat
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/generate-organic`, organicFormData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/generate-organic`, organicFormData);
             if (response.data.success) {
                 setOrganicResults(response.data.data);
                 setCurrentStep(3); // Step 3 is results for organic
@@ -135,7 +135,7 @@ function CopyGenerator() {
         setIsChatting(true);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/refine-copy`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/refine-copy`, {
                 message: chatInput,
                 copyContext: {
                     inputs: formData,

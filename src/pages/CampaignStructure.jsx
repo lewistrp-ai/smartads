@@ -160,7 +160,7 @@ function CampaignStructure() {
         setIsChatting(true);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/chat/refine-structure`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || ''}/api/chat/refine-structure`, {
                 message: chatInput,
                 structureContext: {
                     inputs: formData,
